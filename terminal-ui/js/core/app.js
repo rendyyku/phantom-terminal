@@ -83,6 +83,7 @@ class PhantomApp {
     this.initNavigation();
     this.initHeaderControls();
     this.initWatchlist();
+    this.initOrderBookEngine();
     this.initVaultControls();
     
     // Instantiate Chart Engines
@@ -418,7 +419,33 @@ class PhantomApp {
     }
   }
 
+  initOrderBookEngine() {
+    this.domMidPrice = 2384.50;
+    this.domLastUpdate = Date.now();
+
+    // High-frequency Level 2 DOM Pulsar (Updates order queue quantities & depth bars every 300ms)
+    setInterval(() => {
+      this.pulseOrderBookDOM();
+    }, 300);
+  }
+
+  pulseOrderBookDOM() {
+    if (!this.domMidPrice) {
+      const item = this.watchlist.find((w) => w.symbol === this.currentPair);
+      if (item && item.price) this.domMidPrice = item.price;
+    }
+    if (this.domMidPrice) {
+      this.renderOrderBookDOM(this.domMidPrice);
+    }
+  }
+
   updateOrderBookDOM(midPrice) {
+    if (!midPrice || isNaN(midPrice) || midPrice <= 0) return;
+    this.domMidPrice = midPrice;
+    this.renderOrderBookDOM(midPrice);
+  }
+
+  renderOrderBookDOM(midPrice) {
     const domAsks = document.getElementById('dom-asks');
     const domBids = document.getElementById('dom-bids');
     const domMid = document.getElementById('dom-mid-price');
@@ -428,19 +455,32 @@ class PhantomApp {
 
     const item = this.watchlist.find((w) => w.symbol === this.currentPair) || { digits: 2 };
     const digits = item.digits || 2;
-    const tickStep = digits >= 4 ? 0.0002 : (digits === 3 ? 0.02 : (midPrice > 1000 ? 0.50 : 0.05));
+    
+    // Dynamic tick size based on price magnitude
+    let tickStep = 0.01;
+    if (digits >= 5) tickStep = 0.0001;
+    else if (digits === 4) tickStep = 0.0002;
+    else if (digits === 3) tickStep = 0.02;
+    else if (digits === 2 && midPrice > 10000) tickStep = 5.0;
+    else if (digits === 2 && midPrice > 1000) tickStep = 0.50;
+    else if (digits === 2) tickStep = 0.05;
+
+    const spreadValue = (tickStep * (1.2 + Math.sin(Date.now() / 2000) * 0.4)).toFixed(digits);
 
     if (domMid) domMid.textContent = midPrice.toFixed(digits);
-    if (domSpread) domSpread.textContent = `SPREAD: ${(tickStep * 2).toFixed(digits)}`;
+    if (domSpread) domSpread.textContent = `SPREAD: ${spreadValue}`;
 
     let asksHtml = '';
     let bidsHtml = '';
     const levels = 6;
+    const t = Date.now() / 1000;
 
     for (let i = levels; i >= 1; i--) {
       const pAsk = (midPrice + tickStep * i).toFixed(digits);
-      const volAsk = (Math.sin(i * 1.5) * 12 + 18).toFixed(1);
-      const depthPercent = Math.min(100, Math.round((volAsk / 30) * 100));
+      // Realistic oscillating market depth with micro-noise
+      const baseVol = Math.abs(Math.sin(t * 1.8 + i * 2.1) * 16) + (10 + i * 2.5) + (Math.random() * 2.5);
+      const volAsk = baseVol.toFixed(digits >= 4 ? 2 : 1);
+      const depthPercent = Math.min(100, Math.round((baseVol / 38) * 100));
 
       asksHtml += `
         <div class="orderbook-row">
@@ -453,8 +493,9 @@ class PhantomApp {
 
     for (let i = 1; i <= levels; i++) {
       const pBid = (midPrice - tickStep * i).toFixed(digits);
-      const volBid = (Math.cos(i * 1.2) * 14 + 19).toFixed(1);
-      const depthPercent = Math.min(100, Math.round((volBid / 30) * 100));
+      const baseVol = Math.abs(Math.cos(t * 1.6 + i * 1.9) * 16) + (10 + i * 2.5) + (Math.random() * 2.5);
+      const volBid = baseVol.toFixed(digits >= 4 ? 2 : 1);
+      const depthPercent = Math.min(100, Math.round((baseVol / 38) * 100));
 
       bidsHtml += `
         <div class="orderbook-row">
