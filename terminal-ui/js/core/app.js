@@ -420,32 +420,31 @@ class PhantomApp {
   }
 
   initOrderBookEngine() {
-    this.domMidPrice = 2384.50;
-    this.domLastUpdate = Date.now();
+    this.fetchOrderBook();
 
-    // High-frequency Level 2 DOM Pulsar (Updates order queue quantities & depth bars every 300ms)
+    // Poll live order book every 1.5 seconds for active pair
     setInterval(() => {
-      this.pulseOrderBookDOM();
-    }, 300);
+      this.fetchOrderBook();
+    }, 1500);
   }
 
-  pulseOrderBookDOM() {
-    if (!this.domMidPrice) {
-      const item = this.watchlist.find((w) => w.symbol === this.currentPair);
-      if (item && item.price) this.domMidPrice = item.price;
-    }
-    if (this.domMidPrice) {
-      this.renderOrderBookDOM(this.domMidPrice);
+  async fetchOrderBook() {
+    try {
+      const resp = await fetch(`${API_BASE}/api/order-book?pair=${this.currentPair}&limit=6`);
+      if (resp.ok) {
+        const data = await resp.json();
+        this.renderRealOrderBook(data);
+      }
+    } catch (e) {
+      console.warn('Failed to fetch real order book:', e);
     }
   }
 
   updateOrderBookDOM(midPrice) {
-    if (!midPrice || isNaN(midPrice) || midPrice <= 0) return;
-    this.domMidPrice = midPrice;
-    this.renderOrderBookDOM(midPrice);
+    this.fetchOrderBook();
   }
 
-  renderOrderBookDOM(midPrice) {
+  renderRealOrderBook(data) {
     const domAsks = document.getElementById('dom-asks');
     const domBids = document.getElementById('dom-bids');
     const domMid = document.getElementById('dom-mid-price');
@@ -453,34 +452,35 @@ class PhantomApp {
 
     if (!domAsks || !domBids) return;
 
+    if (!data || !data.bids || data.bids.length === 0) {
+      if (domMid) domMid.textContent = 'CLOSED';
+      if (domSpread) domSpread.textContent = 'MARKET CLOSED';
+      domAsks.innerHTML = `<div style="text-align: center; color: var(--text-dim); padding: 12px; font-size: 9px;">NO LIVE ASKS (CLOSED)</div>`;
+      domBids.innerHTML = `<div style="text-align: center; color: var(--text-dim); padding: 12px; font-size: 9px;">NO LIVE BIDS (CLOSED)</div>`;
+      return;
+    }
+
     const item = this.watchlist.find((w) => w.symbol === this.currentPair) || { digits: 2 };
     const digits = item.digits || 2;
-    
-    // Dynamic tick size based on price magnitude
-    let tickStep = 0.01;
-    if (digits >= 5) tickStep = 0.0001;
-    else if (digits === 4) tickStep = 0.0002;
-    else if (digits === 3) tickStep = 0.02;
-    else if (digits === 2 && midPrice > 10000) tickStep = 5.0;
-    else if (digits === 2 && midPrice > 1000) tickStep = 0.50;
-    else if (digits === 2) tickStep = 0.05;
 
-    const spreadValue = (tickStep * (1.2 + Math.sin(Date.now() / 2000) * 0.4)).toFixed(digits);
+    const mid = data.mid_price || (data.bids[0] ? data.bids[0].price : 0);
+    const spread = data.spread !== undefined ? data.spread : 0.0;
 
-    if (domMid) domMid.textContent = midPrice.toFixed(digits);
-    if (domSpread) domSpread.textContent = `SPREAD: ${spreadValue}`;
+    if (domMid) domMid.textContent = Number(mid).toFixed(digits);
+    if (domSpread) domSpread.textContent = `SPREAD: ${Number(spread).toFixed(digits)}`;
+
+    const maxQty = Math.max(
+      ...data.asks.map(a => a.quantity || 1),
+      ...data.bids.map(b => b.quantity || 1),
+      1.0
+    );
 
     let asksHtml = '';
-    let bidsHtml = '';
-    const levels = 6;
-    const t = Date.now() / 1000;
-
-    for (let i = levels; i >= 1; i--) {
-      const pAsk = (midPrice + tickStep * i).toFixed(digits);
-      // Realistic oscillating market depth with micro-noise
-      const baseVol = Math.abs(Math.sin(t * 1.8 + i * 2.1) * 16) + (10 + i * 2.5) + (Math.random() * 2.5);
-      const volAsk = baseVol.toFixed(digits >= 4 ? 2 : 1);
-      const depthPercent = Math.min(100, Math.round((baseVol / 38) * 100));
+    for (let i = data.asks.length - 1; i >= 0; i--) {
+      const ask = data.asks[i];
+      const pAsk = Number(ask.price).toFixed(digits);
+      const volAsk = Number(ask.quantity).toFixed(digits >= 4 ? 2 : 1);
+      const depthPercent = Math.min(100, Math.round((ask.quantity / maxQty) * 100));
 
       asksHtml += `
         <div class="orderbook-row">
@@ -491,11 +491,12 @@ class PhantomApp {
       `;
     }
 
-    for (let i = 1; i <= levels; i++) {
-      const pBid = (midPrice - tickStep * i).toFixed(digits);
-      const baseVol = Math.abs(Math.cos(t * 1.6 + i * 1.9) * 16) + (10 + i * 2.5) + (Math.random() * 2.5);
-      const volBid = baseVol.toFixed(digits >= 4 ? 2 : 1);
-      const depthPercent = Math.min(100, Math.round((baseVol / 38) * 100));
+    let bidsHtml = '';
+    for (let i = 0; i < data.bids.length; i++) {
+      const bid = data.bids[i];
+      const pBid = Number(bid.price).toFixed(digits);
+      const volBid = Number(bid.quantity).toFixed(digits >= 4 ? 2 : 1);
+      const depthPercent = Math.min(100, Math.round((bid.quantity / maxQty) * 100));
 
       bidsHtml += `
         <div class="orderbook-row">

@@ -154,6 +154,35 @@ class BinanceCryptoFeed:
             logger.error(f"[Binance REST Exception] {e}")
             return None
 
+    async def fetch_order_book(self, symbol: str = "BTCUSDT", limit: int = 6) -> Optional[Dict[str, Any]]:
+        """
+        Fetches 100% REAL Level 2 Order Book Depth directly from Binance Order Matching Engine.
+        Returns live real bids and asks limit orders placed by market participants.
+        """
+        binance_symbol = self.normalize_symbol(symbol)
+        try:
+            url = f"{BINANCE_REST_BASE}/depth"
+            params = {"symbol": binance_symbol, "limit": limit}
+            resp = await self.client.get(url, params=params)
+            if resp.status_code == 200:
+                data = resp.json()
+                bids = [{"price": float(b[0]), "quantity": float(b[1])} for b in data.get("bids", [])]
+                asks = [{"price": float(a[0]), "quantity": float(a[1])} for a in data.get("asks", [])]
+                best_bid = bids[0]["price"] if bids else 0.0
+                best_ask = asks[0]["price"] if asks else 0.0
+                return {
+                    "symbol": binance_symbol,
+                    "last_update_id": data.get("lastUpdateId"),
+                    "bids": bids,
+                    "asks": asks,
+                    "mid_price": best_bid,
+                    "spread": round(best_ask - best_bid, 6) if (best_ask and best_bid) else 0.0,
+                    "is_real": True
+                }
+        except Exception as e:
+            logger.error(f"[Binance Depth Error] {e}")
+        return None
+
     async def fetch_24h_tickers(self) -> Dict[str, Dict[str, Any]]:
         """Fetches 24-hour ticker price change statistics for all crypto pairs."""
         try:
