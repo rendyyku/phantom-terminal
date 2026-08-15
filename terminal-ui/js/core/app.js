@@ -18,17 +18,59 @@ class PhantomApp {
 
     // Sub-components
     this.watchlist = [
+      // --- FOREX & COMMODITIES ---
       { symbol: 'XAUUSD', name: 'Gold / USD', cat: 'FX', price: 2384.50, chg: '+0.45%', digits: 2 },
       { symbol: 'EURUSD', name: 'Euro / USD', cat: 'FX', price: 1.0872, chg: '+0.12%', digits: 5 },
       { symbol: 'GBPUSD', name: 'Pound / USD', cat: 'FX', price: 1.2940, chg: '-0.18%', digits: 5 },
       { symbol: 'USDJPY', name: 'USD / Yen', cat: 'FX', price: 154.60, chg: '+0.32%', digits: 3 },
       { symbol: 'USDCAD', name: 'USD / CAD', cat: 'FX', price: 1.3680, chg: '-0.05%', digits: 5 },
       { symbol: 'AUDUSD', name: 'AUD / USD', cat: 'FX', price: 0.6650, chg: '+0.22%', digits: 5 },
-      { symbol: 'BTCUSDT', name: 'Bitcoin / USDT', cat: 'CRYPTO', price: 63103.05, chg: '+1.74%', digits: 2 },
-      { symbol: 'ETHUSDT', name: 'Ethereum / USDT', cat: 'CRYPTO', price: 3450.20, chg: '+2.10%', digits: 2 },
-      { symbol: 'SOLUSDT', name: 'Solana / USDT', cat: 'CRYPTO', price: 145.80, chg: '+4.65%', digits: 2 },
-      { symbol: 'BNBUSDT', name: 'BNB / USDT', cat: 'CRYPTO', price: 580.40, chg: '+0.80%', digits: 2 },
-      { symbol: 'XRPUSDT', name: 'XRP / USDT', cat: 'CRYPTO', price: 0.5850, chg: '-0.40%', digits: 4 }
+      { symbol: 'NZDUSD', name: 'NZD / USD', cat: 'FX', price: 0.6020, chg: '+0.15%', digits: 5 },
+      { symbol: 'USDCHF', name: 'USD / CHF', cat: 'FX', price: 0.8840, chg: '-0.08%', digits: 5 },
+      { symbol: 'GBPJPY', name: 'GBP / JPY', cat: 'FX', price: 200.15, chg: '+0.40%', digits: 3 },
+      { symbol: 'EURJPY', name: 'EUR / JPY', cat: 'FX', price: 168.20, chg: '+0.28%', digits: 3 },
+
+      // --- CRYPTO: LAYER 1 & MAJORS ---
+      { symbol: 'BTCUSDT', name: 'Bitcoin', cat: 'CRYPTO', price: 63100.00, chg: '+1.74%', digits: 2 },
+      { symbol: 'ETHUSDT', name: 'Ethereum', cat: 'CRYPTO', price: 3450.20, chg: '+2.10%', digits: 2 },
+      { symbol: 'SOLUSDT', name: 'Solana', cat: 'CRYPTO', price: 145.80, chg: '+4.65%', digits: 2 },
+      { symbol: 'BNBUSDT', name: 'BNB', cat: 'CRYPTO', price: 580.40, chg: '+0.80%', digits: 2 },
+      { symbol: 'XRPUSDT', name: 'Ripple', cat: 'CRYPTO', price: 0.5850, chg: '-0.40%', digits: 4 },
+      { symbol: 'ADAUSDT', name: 'Cardano', cat: 'CRYPTO', price: 0.3520, chg: '+1.15%', digits: 4 },
+      { symbol: 'AVAXUSDT', name: 'Avalanche', cat: 'CRYPTO', price: 22.40, chg: '+3.20%', digits: 2 },
+      { symbol: 'SUIUSDT', name: 'Sui', cat: 'CRYPTO', price: 0.8850, chg: '+6.10%', digits: 4 },
+      { symbol: 'NEARUSDT', name: 'NEAR Protocol', cat: 'CRYPTO', price: 4.52, chg: '+3.80%', digits: 3 },
+      { symbol: 'APTUSDT', name: 'Aptos', cat: 'CRYPTO', price: 6.75, chg: '+2.45%', digits: 2 },
+      { symbol: 'TONUSDT', name: 'Toncoin', cat: 'CRYPTO', price: 6.65, chg: '+1.05%', digits: 3 },
+      { symbol: 'TRXUSDT', name: 'TRON', cat: 'CRYPTO', price: 0.1320, chg: '+0.60%', digits: 4 },
+      { symbol: 'DOTUSDT', name: 'Polkadot', cat: 'CRYPTO', price: 4.60, chg: '+0.95%', digits: 3 },
+      { symbol: 'LINKUSDT', name: 'Chainlink', cat: 'CRYPTO', price: 11.25, chg: '+2.80%', digits: 3 },
+      { symbol: 'LTCUSDT', name: 'Litecoin', cat: 'CRYPTO', price: 65.40, chg: '+0.75%', digits: 2 },
+
+      // --- CRYPTO: AI & COMPUTE ---
+      { symbol: 'TAOUSDT', name: 'Bittensor (TAO)', cat: 'CRYPTO', price: 310.50, chg: '+7.40%', digits: 2 },
+      { symbol: 'RENDERUSDT', name: 'Render', cat: 'CRYPTO', price: 5.65, chg: '+5.20%', digits: 3 },
+      { symbol: 'FETUSDT', name: 'Artificial Superintelligence', cat: 'CRYPTO', price: 1.15, chg: '+4.80%', digits: 4 },
+      { symbol: 'WLDUSDT', name: 'Worldcoin', cat: 'CRYPTO', price: 1.62, chg: '+3.10%', digits: 3 },
+      { symbol: 'ARKMUSDT', name: 'Arkham', cat: 'CRYPTO', price: 1.18, chg: '+4.30%', digits: 3 },
+
+      // --- CRYPTO: MEMES & HIGH BETA ---
+      { symbol: 'DOGEUSDT', name: 'Dogecoin', cat: 'CRYPTO', price: 0.1045, chg: '+2.15%', digits: 5 },
+      { symbol: 'SHIBUSDT', name: 'Shiba Inu', cat: 'CRYPTO', price: 0.000014, chg: '+1.80%', digits: 7 },
+      { symbol: 'PEPEUSDT', name: 'Pepe', cat: 'CRYPTO', price: 0.000008, chg: '+6.50%', digits: 8 },
+      { symbol: 'WIFUSDT', name: 'dogwifhat', cat: 'CRYPTO', price: 1.65, chg: '+8.20%', digits: 3 },
+      { symbol: 'BONKUSDT', name: 'Bonk', cat: 'CRYPTO', price: 0.000021, chg: '+5.10%', digits: 7 },
+      { symbol: 'FLOKIUSDT', name: 'Floki', cat: 'CRYPTO', price: 0.000125, chg: '+3.40%', digits: 6 },
+
+      // --- CRYPTO: DEFI & MODULAR ---
+      { symbol: 'UNIUSDT', name: 'Uniswap', cat: 'CRYPTO', price: 6.45, chg: '+1.90%', digits: 3 },
+      { symbol: 'AAVEUSDT', name: 'Aave', cat: 'CRYPTO', price: 112.30, chg: '+4.10%', digits: 2 },
+      { symbol: 'PENDLEUSDT', name: 'Pendle', cat: 'CRYPTO', price: 2.85, chg: '+5.60%', digits: 3 },
+      { symbol: 'INJUSDT', name: 'Injective', cat: 'CRYPTO', price: 19.80, chg: '+3.70%', digits: 2 },
+      { symbol: 'TIAUSDT', name: 'Celestia', cat: 'CRYPTO', price: 5.40, chg: '+2.30%', digits: 3 },
+      { symbol: 'SEIUSDT', name: 'Sei Network', cat: 'CRYPTO', price: 0.3150, chg: '+4.05%', digits: 4 },
+      { symbol: 'JUPUSDT', name: 'Jupiter', cat: 'CRYPTO', price: 0.8250, chg: '+3.90%', digits: 4 },
+      { symbol: 'ENAUSDT', name: 'Ethena', cat: 'CRYPTO', price: 0.3200, chg: '+1.75%', digits: 4 }
     ];
     this.activeWatchlistCat = 'FX';
     this.watchlistSearchQuery = '';
