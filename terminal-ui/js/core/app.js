@@ -24,11 +24,11 @@ class PhantomApp {
       { symbol: 'USDJPY', name: 'USD / Yen', cat: 'FX', price: 154.60, chg: '+0.32%', digits: 3 },
       { symbol: 'USDCAD', name: 'USD / CAD', cat: 'FX', price: 1.3680, chg: '-0.05%', digits: 5 },
       { symbol: 'AUDUSD', name: 'AUD / USD', cat: 'FX', price: 0.6650, chg: '+0.22%', digits: 5 },
-      { symbol: 'BTCUSD', name: 'Bitcoin / USD', cat: 'CRYPTO', price: 63103.05, chg: '+1.74%', digits: 2 },
-      { symbol: 'ETHUSD', name: 'Ethereum / USD', cat: 'CRYPTO', price: 3450.20, chg: '+2.10%', digits: 2 },
-      { symbol: 'SOLUSD', name: 'Solana / USD', cat: 'CRYPTO', price: 145.80, chg: '+4.65%', digits: 2 },
-      { symbol: 'BNBUSD', name: 'BNB / USD', cat: 'CRYPTO', price: 580.40, chg: '+0.80%', digits: 2 },
-      { symbol: 'XRPUSD', name: 'XRP / USD', cat: 'CRYPTO', price: 0.5850, chg: '-0.40%', digits: 4 }
+      { symbol: 'BTCUSDT', name: 'Bitcoin / USDT', cat: 'CRYPTO', price: 63103.05, chg: '+1.74%', digits: 2 },
+      { symbol: 'ETHUSDT', name: 'Ethereum / USDT', cat: 'CRYPTO', price: 3450.20, chg: '+2.10%', digits: 2 },
+      { symbol: 'SOLUSDT', name: 'Solana / USDT', cat: 'CRYPTO', price: 145.80, chg: '+4.65%', digits: 2 },
+      { symbol: 'BNBUSDT', name: 'BNB / USDT', cat: 'CRYPTO', price: 580.40, chg: '+0.80%', digits: 2 },
+      { symbol: 'XRPUSDT', name: 'XRP / USDT', cat: 'CRYPTO', price: 0.5850, chg: '-0.40%', digits: 4 }
     ];
     this.activeWatchlistCat = 'FX';
     this.watchlistSearchQuery = '';
@@ -262,6 +262,27 @@ class PhantomApp {
 
     this.renderWatchlist();
     this.updateOrderBookDOM(2384.50);
+    this.fetchCryptoTickers();
+  }
+
+  async fetchCryptoTickers() {
+    try {
+      const resp = await fetch(`${API_BASE}/api/crypto/tickers`);
+      if (resp.ok) {
+        const tickers = await resp.json();
+        for (const sym in tickers) {
+          const t = tickers[sym];
+          const item = this.watchlist.find((w) => w.symbol === sym);
+          if (item) {
+            item.price = t.price;
+            item.chg = t.change_str;
+          }
+        }
+        this.renderWatchlist();
+      }
+    } catch (e) {
+      console.warn('Failed to fetch crypto tickers:', e);
+    }
   }
 
   renderWatchlist() {
@@ -319,17 +340,23 @@ class PhantomApp {
     this.fetchMarketData(this.currentPair, this.currentTimeframe);
   }
 
-  updateWatchlistTick(symbol, price) {
+  updateWatchlistTick(symbol, price, changeStr = null) {
     const item = this.watchlist.find((w) => w.symbol === symbol);
     if (item) {
       const prevPrice = item.price;
       item.price = price;
+      if (changeStr) item.chg = changeStr;
       
       const elPrice = document.getElementById(`wl-price-${symbol}`);
+      const elChg = document.getElementById(`wl-chg-${symbol}`);
       const row = document.querySelector(`.watchlist-row[data-symbol="${symbol}"]`);
       
       if (elPrice) {
         elPrice.textContent = price.toFixed(item.digits || 2);
+      }
+      if (elChg && changeStr) {
+        elChg.textContent = changeStr;
+        elChg.className = changeStr.startsWith('+') ? 'text-green' : 'text-red';
       }
       if (row) {
         row.classList.remove('flash-green', 'flash-red');
@@ -508,7 +535,10 @@ class PhantomApp {
     const tfBadge = document.getElementById('timeframe-indicator-badge');
 
     if (sourceEl) {
-      if (source === 'MT5_REAL_BROKER') {
+      if (source === 'BINANCE_PUBLIC_API') {
+        sourceEl.className = 'badge badge-bull';
+        sourceEl.textContent = 'BINANCE: 24/7 LIVE';
+      } else if (source === 'MT5_REAL_BROKER') {
         sourceEl.className = 'badge badge-bull';
         sourceEl.textContent = 'MT5: CONNECTED';
       } else {
@@ -568,7 +598,9 @@ class PhantomApp {
   }
 
   handleIncomingMessage(payload) {
-    if (payload.type === 'TICK_UPDATE') {
+    if (payload.type === 'CRYPTO_TICK') {
+      this.updateWatchlistTick(payload.symbol, payload.price, payload.change_str);
+    } else if (payload.type === 'TICK_UPDATE') {
       if (payload.candle && payload.candle.close) {
         this.updateWatchlistTick(payload.pair, payload.candle.close);
       }

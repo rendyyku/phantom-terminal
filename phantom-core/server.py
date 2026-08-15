@@ -30,6 +30,7 @@ from engine.news_service import MacroNewsService
 from bridge.risk_guard import RiskGuard
 from bridge.mt5_connector import MT5SocketBridge
 from bridge.mt5_feed import MT5NativeFeed
+from bridge.binance_feed import BinanceCryptoFeed
 
 # Directory to Terminal UI frontend
 UI_DIST_DIR = BASE_DIR.parent / "terminal-ui"
@@ -38,6 +39,7 @@ UI_DIST_DIR = BASE_DIR.parent / "terminal-ui"
 risk_guard = RiskGuard()
 mt5_bridge = MT5SocketBridge()
 mt5_native_feed = MT5NativeFeed()
+binance_feed = BinanceCryptoFeed()
 byok_client = UniversalBYOKClient()
 prompt_builder = PromptBuilder()
 consensus_evaluator = ConsensusEvaluator(byok_client)
@@ -170,12 +172,21 @@ async def news_updater_task():
 async def lifespan(app: FastAPI):
     # Startup
     await mt5_bridge.start_server(on_data_received=on_mt5_data_received)
+    
+    # Register Binance Crypto WebSocket callback
+    def on_binance_data(packet: Dict[str, Any]):
+        asyncio.create_task(broadcast_ws(packet))
+    
+    binance_feed.add_stream_callback(on_binance_data)
+
     task1 = asyncio.create_task(market_tick_streamer())
     task2 = asyncio.create_task(news_updater_task())
+    task3 = asyncio.create_task(binance_feed.start_live_stream())
     yield
     # Shutdown
     task1.cancel()
     task2.cancel()
+    task3.cancel()
 
 app = FastAPI(title="Phantom Terminal AI Quant Core", version="2.0.0", lifespan=lifespan)
 
@@ -212,6 +223,12 @@ class RiskSettingsPayload(BaseModel):
     max_open_trades: int
     enable_hard_stop: bool
     prop_firm_mode: bool
+
+@app.get("/api/crypto/tickers")
+async def get_crypto_tickers():
+    """Returns real-time 24h ticker prices from Binance."""
+    tickers = await binance_feed.fetch_24h_tickers()
+    return tickers
 
 @app.get("/api/news")
 async def get_news(category: str = "ALL"):
@@ -252,6 +269,10 @@ async def get_status():
         "mt5_bridge": {
             **mt5_bridge.get_status(),
             "native_interface_active": mt5_native_feed.is_initialized
+        },
+        "binance_feed": {
+            "status": "ONLINE",
+            "provider": "Binance Public Global Stream"
         }
     }
 
@@ -262,7 +283,33 @@ async def get_market_data(pair: str = "XAUUSD", timeframe: str = "1S"):
     current_timeframe = timeframe.upper()
     cache_key = f"{pair}_{current_timeframe}"
 
-    # Fetch REAL candles directly from MT5 for selected timeframe
+    # 1. CHECK IF PAIR IS CRYPTO (BINANCE PUBLIC API)
+    if binance_feed.is_crypto_pair(pair):
+        real_candles = await binance_feed.fetch_klines(pair, current_timeframe, 300)
+        if real_candles and len(real_candles) > 0:
+            market_cache[cache_key] = real_candles
+            analysis = OrderFlowMath.compute_all_indicators(real_candles, current_timeframe)
+            return {
+                "pair": pair,
+                "timeframe": current_timeframe,
+                "candles": real_candles,
+                "cvd": analysis["cvd"],
+                "smc": analysis["smc"],
+                "volume_profile": analysis["volume_profile"],
+                "fvgs": analysis["smc"]["fvgs"],
+                "order_blocks": analysis["smc"]["order_blocks"],
+                "structure": {
+                    "trend": analysis["trend"],
+                    "swing_structures": analysis["smc"]["swing_structures"],
+                    "equal_high_lows": analysis["smc"]["equal_high_lows"],
+                    "zones": analysis["smc"]["zones"],
+                    "strong_weak": analysis["smc"]["strong_weak"]
+                },
+                "source": "BINANCE_PUBLIC_API",
+                "is_connected": True
+            }
+
+    # 2. FOREX / GOLD (MT5 DIRECT INTERFACE)
     if current_timeframe in ["1S", "S1", "SEC", "1SEC"]:
         real_candles = mt5_native_feed.fetch_1s_candles(pair, 300)
     else:
@@ -316,12 +363,18 @@ async def get_market_data(pair: str = "XAUUSD", timeframe: str = "1S"):
 async def get_history(pair: str = "XAUUSD", timeframe: str = "1S", offset: int = 0, count: int = 300, before_time: Optional[int] = None):
     """
     Fetches older historical candles for seamless Infinite Scroll.
+    Supports both Binance Crypto and MT5 Forex/Gold.
     """
     tf = timeframe.upper()
-    if tf in ["1S", "S1", "SEC", "1SEC"]:
-        older_candles = mt5_native_feed.fetch_1s_candles(pair, count=count, before_timestamp=before_time)
+
+    if binance_feed.is_crypto_pair(pair):
+        end_time_ms = (before_time * 1000) if before_time else None
+        older_candles = await binance_feed.fetch_klines(pair, tf, count=count, end_time_ms=end_time_ms)
     else:
-        older_candles = mt5_native_feed.fetch_ohlcv(pair, tf, count=count, start_pos=offset)
+        if tf in ["1S", "S1", "SEC", "1SEC"]:
+            older_candles = mt5_native_feed.fetch_1s_candles(pair, count=count, before_timestamp=before_time)
+        else:
+            older_candles = mt5_native_feed.fetch_ohlcv(pair, tf, count=count, start_pos=offset)
 
     if older_candles and len(older_candles) > 0:
         return {
