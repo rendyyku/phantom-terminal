@@ -1,8 +1,17 @@
 import os
+import sys
 import json
 import asyncio
 from pathlib import Path
 from contextlib import asynccontextmanager
+
+# Force UTF-8 on Windows stdout/stderr to prevent cp1252 charmap encoding errors
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 from typing import List, Dict, Any, Optional
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
