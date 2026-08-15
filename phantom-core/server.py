@@ -437,7 +437,7 @@ async def update_risk_settings(payload: RiskSettingsPayload):
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    active_websockets.append(websocket)
+    active_websockets.add(websocket)
     try:
         # Send initial status & data immediately upon connection
         await websocket.send_text(json.dumps({
@@ -455,8 +455,8 @@ async def websocket_endpoint(websocket: WebSocket):
             active_websockets.remove(websocket)
 
 # Mount Terminal UI static files directly on root "/"
-if UI_DIR.exists():
-    app.mount("/", StaticFiles(directory=str(UI_DIR), html=True), name="static_ui")
+if UI_DIST_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(UI_DIST_DIR), html=True), name="static_ui")
 
 if __name__ == "__main__":
     import uvicorn

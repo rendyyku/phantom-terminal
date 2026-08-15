@@ -81,13 +81,47 @@
 
     <!-- DESK 1: MARKET & ORDERFLOW RADAR -->
     <section id="desk-market" class="desk-panel active">
-      <div style="display: grid; grid-template-columns: 1fr 320px; gap: 14px; height: 100%;">
+      <div style="display: grid; grid-template-columns: 230px 1fr 300px; gap: 12px; height: 100%;">
         
-        <!-- Main Chart Container -->
+        <!-- LEFT COLUMN: LIVE MULTI-ASSET WATCHLIST -->
+        <div class="glass-card" style="height: 100%; display: flex; flex-direction: column;">
+          <div class="card-header" style="padding: 8px 10px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="card-title" style="font-size: 11px;">
+              <span>📋</span> WATCHLIST
+            </div>
+            <!-- Category Filter Tabs -->
+            <div style="display: flex; gap: 3px;">
+              <button class="pill-btn active watchlist-tab" data-cat="ALL" style="font-size: 9px; padding: 1px 5px;">ALL</button>
+              <button class="pill-btn watchlist-tab" data-cat="FX" style="font-size: 9px; padding: 1px 5px;">FX</button>
+              <button class="pill-btn watchlist-tab" data-cat="CRYPTO" style="font-size: 9px; padding: 1px 5px;">CRYPTO</button>
+            </div>
+          </div>
+
+          <!-- Search Filter -->
+          <div style="padding: 5px 8px; border-bottom: 1px solid var(--card-border); background: rgba(7, 9, 14, 0.5);">
+            <input id="watchlist-search" type="text" placeholder="🔍 Search symbol..." style="width: 100%; background: rgba(13, 17, 26, 0.8); border: 1px solid var(--card-border); border-radius: 4px; padding: 4px 8px; font-size: 10px; color: var(--text-main); font-family: var(--font-mono); outline: none;">
+          </div>
+
+          <!-- Table Header -->
+          <div style="display: grid; grid-template-columns: 1fr 70px 50px; padding: 5px 10px; font-size: 9px; color: var(--text-muted); font-family: var(--font-mono); border-bottom: 1px solid var(--card-border); background: rgba(13, 17, 26, 0.7); font-weight: 700;">
+            <span>SYMBOL</span>
+            <span style="text-align: right;">PRICE</span>
+            <span style="text-align: right;">CHG</span>
+          </div>
+
+          <!-- Dynamic Watchlist Rows Container -->
+          <div id="watchlist-items" style="flex: 1; overflow-y: auto;">
+            <!-- Rendered by app.js -->
+          </div>
+        </div>
+
+        <!-- CENTER COLUMN: MAIN CHART & CVD -->
         <div class="glass-card" style="height: 100%; display: flex; flex-direction: column;">
           <div class="card-header" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 14px; min-height: 42px;">
-            <div class="card-title" style="font-size: 12px; white-space: nowrap;">
-              <span>📈</span> MARKET CHART & ORDERFLOW
+            <!-- Active Pair & Live HUD -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="active-pair-badge" class="badge badge-cyan" style="font-size: 12px; font-weight: 800; padding: 3px 8px;">XAUUSD</span>
+              <span id="active-pair-price" class="text-green font-mono" style="font-size: 13px; font-weight: 700;">--</span>
             </div>
 
             <!-- Timeframe Selector -->
@@ -104,9 +138,9 @@
             <!-- Optional Indicators (Default OFF / Clean) -->
             <div style="display: flex; gap: 4px; align-items: center;">
               <span style="font-size: 10px; color: var(--text-muted); margin-right: 2px;">OVERLAYS:</span>
-              <button id="toggle-smc" class="pill-btn" style="font-size: 10px; padding: 2px 8px;">✨ SMC</button>
-              <button id="toggle-vp" class="pill-btn" style="font-size: 10px; padding: 2px 8px;">📊 VP (POC)</button>
-              <button id="toggle-zones" class="pill-btn" style="font-size: 10px; padding: 2px 8px;">🎯 Zones</button>
+              <button id="toggle-smc" class="pill-btn" style="font-size: 10px; padding: 2px 7px;">✨ SMC</button>
+              <button id="toggle-vp" class="pill-btn" style="font-size: 10px; padding: 2px 7px;">📊 VP (POC)</button>
+              <button id="toggle-zones" class="pill-btn" style="font-size: 10px; padding: 2px 7px;">🎯 Zones</button>
             </div>
 
             <!-- Status Badges -->
@@ -129,39 +163,40 @@
           </div>
         </div>
 
-        <!-- Right Radar Sidebar -->
-        <div style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- RIGHT COLUMN: RADAR & LEVEL 2 ORDER BOOK -->
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Top: Institutional Radar -->
           <div class="glass-card">
-            <div class="card-header">
-              <div class="card-title"><span>🎯</span> INSTITUTIONAL QUANT RADAR</div>
+            <div class="card-header" style="padding: 8px 12px;">
+              <div class="card-title" style="font-size: 11px;"><span>🎯</span> QUANT RADAR</div>
             </div>
-            <div class="card-body">
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+            <div class="card-body" style="padding: 10px;">
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px;">
                   <span style="color: var(--text-muted);">Structure Trend:</span>
-                  <span id="ict-trend-status" class="badge badge-bull" style="font-size: 10px;">BULLISH</span>
+                  <span id="ict-trend-status" class="badge badge-bull" style="font-size: 9px; padding: 2px 6px;">BULLISH</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px;">
                   <span style="color: var(--text-muted);">Point of Control (POC):</span>
                   <span id="vp-poc-val" class="text-red font-mono" style="font-weight: 700;">--</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px;">
                   <span style="color: var(--text-muted);">Value Area (VAH / VAL):</span>
                   <span id="vp-va-val" class="text-cyan font-mono" style="font-weight: 700;">-- / --</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px;">
                   <span style="color: var(--text-muted);">Active Order Blocks:</span>
                   <span id="smc-ob-count" class="text-green font-mono" style="font-weight: 700;">--</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px;">
                   <span style="color: var(--text-muted);">Unmitigated FVGs:</span>
                   <span id="ict-fvg-count" class="text-cyan font-mono" style="font-weight: 700;">--</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px;">
                   <span style="color: var(--text-muted);">Equal Highs (EQH/BSL):</span>
                   <span id="ict-bsl-count" class="text-gold font-mono" style="font-weight: 700;">--</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 11px;">
                   <span style="color: var(--text-muted);">Equal Lows (EQL/SSL):</span>
                   <span id="ict-ssl-count" class="text-gold font-mono" style="font-weight: 700;">--</span>
                 </div>
@@ -169,21 +204,38 @@
             </div>
           </div>
 
-          <div class="glass-card" style="flex: 1;">
-            <div class="card-header">
-              <div class="card-title"><span>⚡</span> QUICK ACTION</div>
+          <!-- Bottom: Level 2 Order Book (DOM) & Quick Trade -->
+          <div class="glass-card" style="flex: 1; display: flex; flex-direction: column;">
+            <div class="card-header" style="padding: 6px 12px; display: flex; justify-content: space-between;">
+              <div class="card-title" style="font-size: 10px;"><span>📊</span> LEVEL 2 DEPTH (DOM)</div>
+              <span id="dom-spread" style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-neon);">SPREAD: 1.2</span>
             </div>
-            <div class="card-body" style="display: flex; flex-direction: column; gap: 12px; justify-content: center;">
-              <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
-                AI Titan Council is ready. Launch the multi-agent debate to calculate instant institutional entry levels and R:R probability.
-              </p>
-              <button onclick="phantomApp.triggerWarRoomDebate()" class="btn-glow" style="width: 100%;">
-                🔥 LAUNCH AI WAR ROOM DEBATE
+            
+            <!-- Order Book Content -->
+            <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; font-family: var(--font-mono); font-size: 10px;">
+              <!-- Asks (Red) -->
+              <div id="dom-asks" style="display: flex; flex-direction: column-reverse; justify-content: flex-end; padding: 2px 0;"></div>
+              
+              <!-- Mid Spread Bar -->
+              <div style="padding: 3px 10px; background: rgba(0, 240, 255, 0.08); border-top: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 9px; color: var(--text-muted);">LAST TRADED</span>
+                <span id="dom-mid-price" class="text-cyan font-mono" style="font-weight: 800; font-size: 11px;">--</span>
+              </div>
+
+              <!-- Bids (Green) -->
+              <div id="dom-bids" style="display: flex; flex-direction: column; padding: 2px 0;"></div>
+            </div>
+
+            <!-- Quick Action Trigger -->
+            <div style="padding: 8px 10px; border-top: 1px solid var(--card-border); background: rgba(10, 14, 23, 0.8);">
+              <button onclick="phantomApp.triggerWarRoomDebate()" class="btn-glow" style="width: 100%; font-size: 11px; padding: 6px 10px;">
+                🔥 LAUNCH AI WAR ROOM
               </button>
             </div>
           </div>
         </div>
-        </div>
+      </div>
+    </section>
 
       </div>
     </section>

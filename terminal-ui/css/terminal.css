@@ -240,7 +240,85 @@ body {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-muted);
-  z-index: 100;
+}
+
+/* --- WATCHLIST STYLING --- */
+.watchlist-row {
+  display: grid;
+  grid-template-columns: 1fr 75px 55px;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  border-bottom: 1px solid rgba(38, 56, 89, 0.25);
+  cursor: pointer;
+  align-items: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+}
+
+.watchlist-row:hover {
+  background: rgba(38, 56, 89, 0.45);
+}
+
+.watchlist-row.active {
+  background: rgba(0, 240, 255, 0.12);
+  border-left: 3px solid var(--cyan-neon);
+}
+
+.watchlist-row .pair-symbol {
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.watchlist-row .pair-category {
+  font-size: 8px;
+  padding: 1px 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+
+.watchlist-row.flash-green {
+  background: rgba(0, 255, 136, 0.25) !important;
+}
+
+.watchlist-row.flash-red {
+  background: rgba(255, 51, 102, 0.25) !important;
+}
+
+/* --- LEVEL 2 ORDER BOOK (DOM) --- */
+.orderbook-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 2.5px 8px;
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  overflow: hidden;
+}
+
+.orderbook-bar-ask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 51, 102, 0.16);
+  pointer-events: none;
+  transition: width 0.15s ease;
+}
+
+.orderbook-bar-bid {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 255, 136, 0.16);
+  pointer-events: none;
+  transition: width 0.15s ease;
+}  z-index: 100;
 }
 
 .status-item {

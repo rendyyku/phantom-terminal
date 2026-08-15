@@ -17,12 +17,21 @@ class PhantomApp {
     this.audioCtx = null;
 
     // Sub-components
-    this.candleEngine = null;
-    this.cvdEngine = null;
-    this.warRoomView = null;
-    this.newsWireView = null;
-    this.riskView = null;
-    this.socketClient = null;
+    this.watchlist = [
+      { symbol: 'XAUUSD', name: 'Gold / USD', cat: 'FX', price: 2384.50, chg: '+0.45%', digits: 2 },
+      { symbol: 'EURUSD', name: 'Euro / USD', cat: 'FX', price: 1.0872, chg: '+0.12%', digits: 5 },
+      { symbol: 'GBPUSD', name: 'Pound / USD', cat: 'FX', price: 1.2940, chg: '-0.18%', digits: 5 },
+      { symbol: 'USDJPY', name: 'USD / Yen', cat: 'FX', price: 154.60, chg: '+0.32%', digits: 3 },
+      { symbol: 'USDCAD', name: 'USD / CAD', cat: 'FX', price: 1.3680, chg: '-0.05%', digits: 5 },
+      { symbol: 'AUDUSD', name: 'AUD / USD', cat: 'FX', price: 0.6650, chg: '+0.22%', digits: 5 },
+      { symbol: 'BTCUSD', name: 'Bitcoin / USD', cat: 'CRYPTO', price: 63103.05, chg: '+1.74%', digits: 2 },
+      { symbol: 'ETHUSD', name: 'Ethereum / USD', cat: 'CRYPTO', price: 3450.20, chg: '+2.10%', digits: 2 },
+      { symbol: 'SOLUSD', name: 'Solana / USD', cat: 'CRYPTO', price: 145.80, chg: '+4.65%', digits: 2 },
+      { symbol: 'BNBUSD', name: 'BNB / USD', cat: 'CRYPTO', price: 580.40, chg: '+0.80%', digits: 2 },
+      { symbol: 'XRPUSD', name: 'XRP / USD', cat: 'CRYPTO', price: 0.5850, chg: '-0.40%', digits: 4 }
+    ];
+    this.activeWatchlistCat = 'ALL';
+    this.watchlistSearchQuery = '';
 
     this.init();
   }
@@ -31,6 +40,7 @@ class PhantomApp {
     this.initSound();
     this.initNavigation();
     this.initHeaderControls();
+    this.initWatchlist();
     this.initVaultControls();
     
     // Instantiate Chart Engines
@@ -228,6 +238,172 @@ class PhantomApp {
     }
   }
 
+  initWatchlist() {
+    // Tab filtering (ALL, FX, CRYPTO)
+    const tabs = document.querySelectorAll('.watchlist-tab');
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        this.playSound('click');
+        tabs.forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+        this.activeWatchlistCat = tab.getAttribute('data-cat') || 'ALL';
+        this.renderWatchlist();
+      });
+    });
+
+    // Search filtering
+    const searchInput = document.getElementById('watchlist-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        this.watchlistSearchQuery = e.target.value.trim().toUpperCase();
+        this.renderWatchlist();
+      });
+    }
+
+    this.renderWatchlist();
+    this.updateOrderBookDOM(2384.50);
+  }
+
+  renderWatchlist() {
+    const container = document.getElementById('watchlist-items');
+    if (!container) return;
+
+    let items = this.watchlist;
+    if (this.activeWatchlistCat !== 'ALL') {
+      items = items.filter((item) => item.cat === this.activeWatchlistCat);
+    }
+    if (this.watchlistSearchQuery) {
+      items = items.filter((item) => item.symbol.includes(this.watchlistSearchQuery) || item.name.toUpperCase().includes(this.watchlistSearchQuery));
+    }
+
+    container.innerHTML = items.map((item) => {
+      const isPositive = item.chg.startsWith('+');
+      const chgColor = isPositive ? 'text-green' : 'text-red';
+      const isActive = item.symbol === this.currentPair;
+      const formattedPrice = item.price.toFixed(item.digits || 2);
+
+      return `
+        <div class="watchlist-row ${isActive ? 'active' : ''}" data-symbol="${item.symbol}">
+          <div class="pair-symbol">
+            <span>${item.symbol}</span>
+            <span class="pair-category">${item.cat}</span>
+          </div>
+          <div id="wl-price-${item.symbol}" style="text-align: right; font-weight: 600; color: var(--text-main);">
+            ${formattedPrice}
+          </div>
+          <div id="wl-chg-${item.symbol}" class="${chgColor}" style="text-align: right; font-weight: 700; font-size: 10px;">
+            ${item.chg}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Row click listeners
+    container.querySelectorAll('.watchlist-row').forEach((row) => {
+      row.addEventListener('click', () => {
+        const sym = row.getAttribute('data-symbol');
+        if (sym) this.selectPair(sym);
+      });
+    });
+  }
+
+  selectPair(symbol) {
+    if (this.currentPair === symbol) return;
+    this.playSound('click');
+    this.currentPair = symbol;
+
+    // Update active badge in chart header
+    const badge = document.getElementById('active-pair-badge');
+    if (badge) badge.textContent = symbol;
+
+    // Re-render watchlist to update active border highlight
+    this.renderWatchlist();
+
+    // Fetch market data for selected pair
+    this.fetchMarketData(this.currentPair, this.currentTimeframe);
+  }
+
+  updateWatchlistTick(symbol, price) {
+    const item = this.watchlist.find((w) => w.symbol === symbol);
+    if (item) {
+      const prevPrice = item.price;
+      item.price = price;
+      
+      const elPrice = document.getElementById(`wl-price-${symbol}`);
+      const row = document.querySelector(`.watchlist-row[data-symbol="${symbol}"]`);
+      
+      if (elPrice) {
+        elPrice.textContent = price.toFixed(item.digits || 2);
+      }
+      if (row) {
+        row.classList.remove('flash-green', 'flash-red');
+        void row.offsetWidth; // Trigger reflow
+        row.classList.add(price >= prevPrice ? 'flash-green' : 'flash-red');
+      }
+    }
+
+    // If active pair, update chart HUD & Level 2 Order Book
+    if (symbol === this.currentPair) {
+      const priceBadge = document.getElementById('active-pair-price');
+      if (priceBadge) {
+        const itemObj = this.watchlist.find(w => w.symbol === symbol);
+        priceBadge.textContent = price.toFixed(itemObj ? itemObj.digits : 2);
+      }
+      this.updateOrderBookDOM(price);
+    }
+  }
+
+  updateOrderBookDOM(midPrice) {
+    const domAsks = document.getElementById('dom-asks');
+    const domBids = document.getElementById('dom-bids');
+    const domMid = document.getElementById('dom-mid-price');
+    const domSpread = document.getElementById('dom-spread');
+
+    if (!domAsks || !domBids) return;
+
+    const item = this.watchlist.find((w) => w.symbol === this.currentPair) || { digits: 2 };
+    const digits = item.digits || 2;
+    const tickStep = digits >= 4 ? 0.0002 : (digits === 3 ? 0.02 : (midPrice > 1000 ? 0.50 : 0.05));
+
+    if (domMid) domMid.textContent = midPrice.toFixed(digits);
+    if (domSpread) domSpread.textContent = `SPREAD: ${(tickStep * 2).toFixed(digits)}`;
+
+    let asksHtml = '';
+    let bidsHtml = '';
+    const levels = 6;
+
+    for (let i = levels; i >= 1; i--) {
+      const pAsk = (midPrice + tickStep * i).toFixed(digits);
+      const volAsk = (Math.sin(i * 1.5) * 12 + 18).toFixed(1);
+      const depthPercent = Math.min(100, Math.round((volAsk / 30) * 100));
+
+      asksHtml += `
+        <div class="orderbook-row">
+          <div class="orderbook-bar-ask" style="width: ${depthPercent}%;"></div>
+          <span style="color: #ff3366; font-weight: 600; z-index: 1;">${pAsk}</span>
+          <span style="text-align: right; color: var(--text-muted); z-index: 1;">${volAsk}</span>
+        </div>
+      `;
+    }
+
+    for (let i = 1; i <= levels; i++) {
+      const pBid = (midPrice - tickStep * i).toFixed(digits);
+      const volBid = (Math.cos(i * 1.2) * 14 + 19).toFixed(1);
+      const depthPercent = Math.min(100, Math.round((volBid / 30) * 100));
+
+      bidsHtml += `
+        <div class="orderbook-row">
+          <div class="orderbook-bar-bid" style="width: ${depthPercent}%;"></div>
+          <span style="color: #00ff88; font-weight: 600; z-index: 1;">${pBid}</span>
+          <span style="text-align: right; color: var(--text-muted); z-index: 1;">${volBid}</span>
+        </div>
+      `;
+    }
+
+    domAsks.innerHTML = asksHtml;
+    domBids.innerHTML = bidsHtml;
+  }
+
   initVaultControls() {
     const btnSaveKeys = document.getElementById('btn-save-keys');
     if (btnSaveKeys) {
@@ -265,6 +441,10 @@ class PhantomApp {
         if (this.candleEngine) this.candleEngine.setData(data);
         if (this.cvdEngine) this.cvdEngine.setData(data.cvd);
         this.updateStructureUI(data.structure, data.fvgs, data.order_blocks, data.volume_profile, data.source, timeframe);
+        if (data.candles && data.candles.length > 0) {
+          const lastCandle = data.candles[data.candles.length - 1];
+          this.updateWatchlistTick(pair, lastCandle.close);
+        }
       }
     } catch (e) {
       console.warn('Failed to fetch market data:', e);
@@ -393,6 +573,9 @@ class PhantomApp {
 
   handleIncomingMessage(payload) {
     if (payload.type === 'TICK_UPDATE') {
+      if (payload.candle && payload.candle.close) {
+        this.updateWatchlistTick(payload.pair, payload.candle.close);
+      }
       if (payload.pair === this.currentPair && (!payload.timeframe || payload.timeframe === this.currentTimeframe)) {
         if (this.candleEngine && payload.candle) {
           this.candleEngine.updateLatestCandle(payload.candle);
