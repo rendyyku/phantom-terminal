@@ -77,10 +77,15 @@ class BinanceCryptoFeed:
     """
 
     def __init__(self):
-        self.client = httpx.AsyncClient(timeout=10.0)
+        self._client: Optional[httpx.AsyncClient] = None
         self.is_streaming = False
         self.last_tickers: Dict[str, Dict[str, Any]] = {}
         self.callbacks: List[Callable[[Dict[str, Any]], Any]] = []
+
+    async def get_client(self) -> httpx.AsyncClient:
+        if self._client is None or self._client.is_closed:
+            self._client = httpx.AsyncClient(timeout=10.0)
+        return self._client
 
     def is_crypto_pair(self, symbol: str) -> bool:
         sym = symbol.upper().replace("/", "").replace("-", "")
@@ -89,6 +94,80 @@ class BinanceCryptoFeed:
     def normalize_symbol(self, symbol: str) -> str:
         sym = symbol.upper().replace("/", "").replace("-", "")
         return CRYPTO_SYMBOLS.get(sym, sym if sym.endswith("USDT") else f"{sym}USDT")
+
+    async def fetch_1s_candles(
+        self,
+        symbol: str = "BTCUSDT",
+        count: int = 150
+    ) -> Optional[List[Dict[str, Any]]]:
+        """
+        Builds genuine 1-Second (1S / HFT) candles directly from Binance Public recent trades stream.
+        """
+        binance_symbol = self.normalize_symbol(symbol)
+        try:
+            url = f"{BINANCE_REST_BASE}/trades"
+            params = {"symbol": binance_symbol, "limit": 1000}
+            client = await self.get_client()
+            resp = await client.get(url, params=params)
+            if resp.status_code != 200:
+                return None
+            trades = resp.json()
+            if not trades:
+                return None
+
+            buckets: Dict[int, List[Dict[str, Any]]] = {}
+            for t in trades:
+                sec = int(t["time"]) // 1000
+                if sec not in buckets:
+                    buckets[sec] = []
+                buckets[sec].append(t)
+
+            sorted_secs = sorted(buckets.keys())
+            if not sorted_secs:
+                return None
+
+            candles: List[Dict[str, Any]] = []
+            prev_close = float(trades[0]["price"])
+
+            min_sec = max(sorted_secs[0], sorted_secs[-1] - count)
+            max_sec = sorted_secs[-1]
+
+            for s in range(min_sec, max_sec + 1):
+                if s in buckets:
+                    sec_trades = buckets[s]
+                    open_p = float(sec_trades[0]["price"])
+                    close_p = float(sec_trades[-1]["price"])
+                    prices = [float(t["price"]) for t in sec_trades]
+                    high_p = max(prices)
+                    low_p = min(prices)
+                    vol = sum(float(t["qty"]) for t in sec_trades)
+                    buy_vol = sum(float(t["qty"]) for t in sec_trades if not t.get("isBuyerMaker", False))
+                    sell_vol = max(0.0, vol - buy_vol)
+                    prev_close = close_p
+                else:
+                    open_p = prev_close
+                    high_p = prev_close
+                    low_p = prev_close
+                    close_p = prev_close
+                    vol = 0.001
+                    buy_vol = 0.0
+                    sell_vol = 0.0
+
+                candles.append({
+                    "time": s,
+                    "open": open_p,
+                    "high": high_p,
+                    "low": low_p,
+                    "close": close_p,
+                    "volume": round(vol, 4),
+                    "buy_volume": round(buy_vol, 4),
+                    "sell_volume": round(sell_vol, 4)
+                })
+
+            return candles[-count:]
+        except Exception as e:
+            logger.error(f"[Binance 1S Build Error] {e}")
+            return None
 
     async def fetch_klines(
         self,
@@ -101,11 +180,12 @@ class BinanceCryptoFeed:
         Fetches official OHLCV klines with taker buy/sell volume from Binance.
         """
         binance_symbol = self.normalize_symbol(symbol)
-        interval = TIMEFRAME_MAP.get(timeframe, "1m")
+        tf_upper = timeframe.upper()
 
-        # Fallback for 1S in spot (synthesize or use 1s stream)
-        if interval == "1s":
-            interval = "1m"
+        if tf_upper in ["1S", "S1", "SEC", "1SEC"]:
+            return await self.fetch_1s_candles(binance_symbol, count=limit)
+
+        interval = TIMEFRAME_MAP.get(timeframe, "1m")
 
         params: Dict[str, Any] = {
             "symbol": binance_symbol,
@@ -118,7 +198,8 @@ class BinanceCryptoFeed:
 
         try:
             url = f"{BINANCE_REST_BASE}/klines"
-            resp = await self.client.get(url, params=params)
+            client = await self.get_client()
+            resp = await client.get(url, params=params)
             if resp.status_code != 200:
                 logger.error(f"[Binance REST] Error {resp.status_code}: {resp.text}")
                 return None
@@ -163,7 +244,8 @@ class BinanceCryptoFeed:
         try:
             url = f"{BINANCE_REST_BASE}/depth"
             params = {"symbol": binance_symbol, "limit": limit}
-            resp = await self.client.get(url, params=params)
+            client = await self.get_client()
+            resp = await client.get(url, params=params)
             if resp.status_code == 200:
                 data = resp.json()
                 bids = [{"price": float(b[0]), "quantity": float(b[1])} for b in data.get("bids", [])]
@@ -187,7 +269,8 @@ class BinanceCryptoFeed:
         """Fetches 24-hour ticker price change statistics for all crypto pairs."""
         try:
             url = f"{BINANCE_REST_BASE}/ticker/24hr"
-            resp = await self.client.get(url)
+            client = await self.get_client()
+            resp = await client.get(url)
             if resp.status_code == 200:
                 data = resp.json()
                 result = {}

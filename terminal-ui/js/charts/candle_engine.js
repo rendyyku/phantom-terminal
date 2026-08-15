@@ -160,6 +160,7 @@ class CandleChartEngine {
     this.volumeProfile = data.volume_profile || null;
     this.hasMoreHistory = true;
     this.isLoadingHistory = false;
+    this.scrollOffset = 0; // Snap to latest live candles on timeframe switch
     this.resize();
     this.render();
   }
