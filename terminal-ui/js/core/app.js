@@ -30,7 +30,7 @@ class PhantomApp {
       { symbol: 'BNBUSD', name: 'BNB / USD', cat: 'CRYPTO', price: 580.40, chg: '+0.80%', digits: 2 },
       { symbol: 'XRPUSD', name: 'XRP / USD', cat: 'CRYPTO', price: 0.5850, chg: '-0.40%', digits: 4 }
     ];
-    this.activeWatchlistCat = 'ALL';
+    this.activeWatchlistCat = 'FX';
     this.watchlistSearchQuery = '';
 
     this.init();
@@ -239,14 +239,14 @@ class PhantomApp {
   }
 
   initWatchlist() {
-    // Tab filtering (ALL, FX, CRYPTO)
+    // Tab filtering (FX vs CRYPTO)
     const tabs = document.querySelectorAll('.watchlist-tab');
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {
         this.playSound('click');
         tabs.forEach((t) => t.classList.remove('active'));
         tab.classList.add('active');
-        this.activeWatchlistCat = tab.getAttribute('data-cat') || 'ALL';
+        this.activeWatchlistCat = tab.getAttribute('data-cat') || 'FX';
         this.renderWatchlist();
       });
     });
@@ -268,10 +268,7 @@ class PhantomApp {
     const container = document.getElementById('watchlist-items');
     if (!container) return;
 
-    let items = this.watchlist;
-    if (this.activeWatchlistCat !== 'ALL') {
-      items = items.filter((item) => item.cat === this.activeWatchlistCat);
-    }
+    let items = this.watchlist.filter((item) => item.cat === this.activeWatchlistCat);
     if (this.watchlistSearchQuery) {
       items = items.filter((item) => item.symbol.includes(this.watchlistSearchQuery) || item.name.toUpperCase().includes(this.watchlistSearchQuery));
     }
@@ -286,7 +283,6 @@ class PhantomApp {
         <div class="watchlist-row ${isActive ? 'active' : ''}" data-symbol="${item.symbol}">
           <div class="pair-symbol">
             <span>${item.symbol}</span>
-            <span class="pair-category">${item.cat}</span>
           </div>
           <div id="wl-price-${item.symbol}" style="text-align: right; font-weight: 600; color: var(--text-main);">
             ${formattedPrice}
@@ -514,18 +510,18 @@ class PhantomApp {
     if (sourceEl) {
       if (source === 'MT5_REAL_BROKER') {
         sourceEl.className = 'badge badge-bull';
-        sourceEl.textContent = '🟢 LIVE MT5 BROKER';
+        sourceEl.textContent = 'MT5: CONNECTED';
       } else {
         sourceEl.className = 'badge badge-bear';
-        sourceEl.textContent = '🔴 MT5 OFFLINE';
+        sourceEl.textContent = 'MT5: OFFLINE';
       }
     }
 
     if (tfBadge) {
       if (timeframe === '1S') {
-        tfBadge.textContent = '1S ⚡ HFT';
+        tfBadge.textContent = '1S HFT';
       } else if (timeframe === 'M1') {
-        tfBadge.textContent = 'M1 ⚡ SCALPER';
+        tfBadge.textContent = 'M1 SCALPER';
       } else {
         tfBadge.textContent = `${timeframe} STRUCTURE`;
       }
@@ -560,7 +556,7 @@ class PhantomApp {
   updateBridgeStatus(bridge) {
     const bridgeStatusEl = document.getElementById('mt5-bridge-status-text');
     if (bridgeStatusEl && bridge) {
-      bridgeStatusEl.textContent = bridge.ea_connected ? '🟢 MT5 EA CONNECTED' : '🟡 LISTENING FOR EA (127.0.0.1:9988)';
+      bridgeStatusEl.textContent = bridge.ea_connected ? 'MT5 EA: CONNECTED' : 'LISTENING (PORT 9988)';
     }
   }
 

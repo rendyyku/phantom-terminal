@@ -16,48 +16,47 @@
   <!-- MASTER TOP NAVIGATION HEADER -->
   <header class="master-header">
     <div class="brand-container">
-      <div class="brand-logo">🦅</div>
       <div class="brand-title">PHANTOM TERMINAL</div>
-      <div class="brand-badge">v2.0 PRO QUANT</div>
+      <div class="brand-badge">PRO QUANT</div>
     </div>
 
     <!-- CORE DESKS SELECTOR -->
     <nav class="desk-nav">
       <button class="desk-btn active" data-desk="desk-market">
-        <span>📊</span> 1. Market & OrderFlow
+        1. Market & OrderFlow
       </button>
       <button class="desk-btn" data-desk="desk-war-room">
-        <span>⚔️</span> 2. AI War Room
+        2. AI War Room
       </button>
       <button class="desk-btn" data-desk="desk-macro-news">
-        <span>📰</span> 3. Macro News Wire
+        3. Macro News Wire
       </button>
       <button class="desk-btn" data-desk="desk-ict-lab">
-        <span>🧪</span> 4. ICT Quant Lab
+        4. ICT Quant Lab
       </button>
       <button class="desk-btn" data-desk="desk-mt5-bridge">
-        <span>⚡</span> 5. MT5 Bridge
+        5. MT5 Bridge
       </button>
       <button class="desk-btn" data-desk="desk-risk-shield">
-        <span>🛡️</span> 6. Prop Risk Shield
+        6. Prop Risk Shield
       </button>
       <button class="desk-btn" data-desk="desk-byok-vault">
-        <span>🔑</span> 7. BYOK Vault
+        7. BYOK Vault
       </button>
     </nav>
 
     <!-- HEADER RIGHT CONTROLS -->
     <div class="header-actions">
       <select id="pair-select" class="pair-selector">
-        <option value="XAUUSD">🟡 XAUUSD (Gold)</option>
-        <option value="EURUSD">🔵 EURUSD</option>
-        <option value="GBPUSD">🟣 GBPUSD</option>
-        <option value="USDJPY">🔴 USDJPY</option>
-        <option value="BTCUSD">🟠 BTCUSD</option>
+        <option value="XAUUSD">XAUUSD (Gold)</option>
+        <option value="EURUSD">EURUSD</option>
+        <option value="GBPUSD">GBPUSD</option>
+        <option value="USDJPY">USDJPY</option>
+        <option value="BTCUSD">BTCUSD</option>
       </select>
 
       <button id="btn-trigger-war-room" class="btn-glow">
-        <span>⚡</span> SUMMON AI WAR ROOM
+        SUMMON AI WAR ROOM
       </button>
 
       <div class="system-status">
@@ -69,7 +68,7 @@
 
   <!-- BLOOMBERG-STYLE LIVE FLASH NEWS TICKER STRIP -->
   <div class="flash-ticker-bar">
-    <div class="flash-badge">⚡ FLASH WIRE</div>
+    <div class="flash-badge">FLASH WIRE</div>
     <div id="flash-ticker-headline" class="flash-ticker-text">
       <strong style="color: var(--cyan-neon);">[FEDERAL RESERVE]</strong> Fed Chair Powell signals data-dependent stance on rates as core inflation moderates...
     </div>
@@ -87,19 +86,18 @@
         <div class="glass-card" style="height: 100%; display: flex; flex-direction: column;">
           <div class="card-header" style="padding: 8px 10px; display: flex; justify-content: space-between; align-items: center;">
             <div class="card-title" style="font-size: 11px;">
-              <span>📋</span> WATCHLIST
+              WATCHLIST
             </div>
-            <!-- Category Filter Tabs -->
+            <!-- Category Filter Tabs (No ALL tab, pure FX vs Crypto) -->
             <div style="display: flex; gap: 3px;">
-              <button class="pill-btn active watchlist-tab" data-cat="ALL" style="font-size: 9px; padding: 1px 5px;">ALL</button>
-              <button class="pill-btn watchlist-tab" data-cat="FX" style="font-size: 9px; padding: 1px 5px;">FX</button>
-              <button class="pill-btn watchlist-tab" data-cat="CRYPTO" style="font-size: 9px; padding: 1px 5px;">CRYPTO</button>
+              <button class="pill-btn active watchlist-tab" data-cat="FX" style="font-size: 9px; padding: 2px 7px;">FOREX / GOLD</button>
+              <button class="pill-btn watchlist-tab" data-cat="CRYPTO" style="font-size: 9px; padding: 2px 7px;">CRYPTO</button>
             </div>
           </div>
 
           <!-- Search Filter -->
           <div style="padding: 5px 8px; border-bottom: 1px solid var(--card-border); background: rgba(7, 9, 14, 0.5);">
-            <input id="watchlist-search" type="text" placeholder="🔍 Search symbol..." style="width: 100%; background: rgba(13, 17, 26, 0.8); border: 1px solid var(--card-border); border-radius: 4px; padding: 4px 8px; font-size: 10px; color: var(--text-main); font-family: var(--font-mono); outline: none;">
+            <input id="watchlist-search" type="text" placeholder="Search symbol..." style="width: 100%; background: rgba(13, 17, 26, 0.8); border: 1px solid var(--card-border); border-radius: 4px; padding: 4px 8px; font-size: 10px; color: var(--text-main); font-family: var(--font-mono); outline: none;">
           </div>
 
           <!-- Table Header -->
@@ -120,7 +118,7 @@
           <div class="card-header" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 14px; min-height: 42px;">
             <!-- Active Pair & Live HUD -->
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span id="active-pair-badge" class="badge badge-cyan" style="font-size: 12px; font-weight: 800; padding: 3px 8px;">XAUUSD</span>
+              <span id="active-pair-badge" class="badge badge-cyan" style="font-size: 11px; font-weight: 800; padding: 3px 8px;">XAUUSD</span>
               <span id="active-pair-price" class="text-green font-mono" style="font-size: 13px; font-weight: 700;">--</span>
             </div>
 
@@ -138,15 +136,15 @@
             <!-- Optional Indicators (Default OFF / Clean) -->
             <div style="display: flex; gap: 4px; align-items: center;">
               <span style="font-size: 10px; color: var(--text-muted); margin-right: 2px;">OVERLAYS:</span>
-              <button id="toggle-smc" class="pill-btn" style="font-size: 10px; padding: 2px 7px;">✨ SMC</button>
-              <button id="toggle-vp" class="pill-btn" style="font-size: 10px; padding: 2px 7px;">📊 VP (POC)</button>
-              <button id="toggle-zones" class="pill-btn" style="font-size: 10px; padding: 2px 7px;">🎯 Zones</button>
+              <button id="toggle-smc" class="pill-btn" style="font-size: 10px; padding: 2px 7px;">SMC</button>
+              <button id="toggle-vp" class="pill-btn" style="font-size: 10px; padding: 2px 7px;">VP (POC)</button>
+              <button id="toggle-zones" class="pill-btn" style="font-size: 10px; padding: 2px 7px;">ZONES</button>
             </div>
 
             <!-- Status Badges -->
             <div style="display: flex; gap: 6px; align-items: center;">
-              <span id="market-data-source-badge" class="badge badge-bear">🔴 MT5 OFFLINE</span>
-              <span id="timeframe-indicator-badge" class="badge badge-cyan">1S ⚡ HFT</span>
+              <span id="market-data-source-badge" class="badge badge-bear">MT5: OFFLINE</span>
+              <span id="timeframe-indicator-badge" class="badge badge-cyan">1S HFT</span>
             </div>
           </div>
           
@@ -168,7 +166,7 @@
           <!-- Top: Institutional Radar -->
           <div class="glass-card">
             <div class="card-header" style="padding: 8px 12px;">
-              <div class="card-title" style="font-size: 11px;"><span>🎯</span> QUANT RADAR</div>
+              <div class="card-title" style="font-size: 11px;">QUANT RADAR</div>
             </div>
             <div class="card-body" style="padding: 10px;">
               <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -207,7 +205,7 @@
           <!-- Bottom: Level 2 Order Book (DOM) & Quick Trade -->
           <div class="glass-card" style="flex: 1; display: flex; flex-direction: column;">
             <div class="card-header" style="padding: 6px 12px; display: flex; justify-content: space-between;">
-              <div class="card-title" style="font-size: 10px;"><span>📊</span> LEVEL 2 DEPTH (DOM)</div>
+              <div class="card-title" style="font-size: 10px;">LEVEL 2 DEPTH (DOM)</div>
               <span id="dom-spread" style="font-size: 9px; font-family: var(--font-mono); color: var(--cyan-neon);">SPREAD: 1.2</span>
             </div>
             
@@ -229,7 +227,7 @@
             <!-- Quick Action Trigger -->
             <div style="padding: 8px 10px; border-top: 1px solid var(--card-border); background: rgba(10, 14, 23, 0.8);">
               <button onclick="phantomApp.triggerWarRoomDebate()" class="btn-glow" style="width: 100%; font-size: 11px; padding: 6px 10px;">
-                🔥 LAUNCH AI WAR ROOM
+                LAUNCH AI WAR ROOM
               </button>
             </div>
           </div>
@@ -252,7 +250,7 @@
             <div class="glass-card titan-card titan-bull">
               <div class="titan-header">
                 <div class="titan-name text-green">
-                  <span>🟢</span> TITAN 1: CLAUDE 3.5 (BULL SPECIALIST)
+                  TITAN 1: CLAUDE 3.5 (BULL SPECIALIST)
                 </div>
                 <span class="badge badge-bull">ICT DISPLACEMENT</span>
               </div>
@@ -266,7 +264,7 @@ Click "SUMMON AI WAR ROOM" to dispatch Claude 3.5 for deep spatial Bullish analy
             <div class="glass-card titan-card titan-bear">
               <div class="titan-header">
                 <div class="titan-name text-red">
-                  <span>🔴</span> TITAN 2: DEEPSEEK R1 (BEAR SPECIALIST)
+                  TITAN 2: DEEPSEEK R1 (BEAR SPECIALIST)
                 </div>
                 <span class="badge badge-bear">TRAP & RESISTANCE</span>
               </div>
@@ -319,7 +317,7 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
 
             <div>
               <button id="btn-execute-1click" class="btn-glow" style="display: none; width: 100%;">
-                ⚡ 1-CLICK MT5 EXECUTION
+                1-CLICK MT5 EXECUTION
               </button>
             </div>
           </div>
@@ -330,7 +328,7 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
         <div class="war-room-sidebar">
           <div class="glass-card" style="height: 100%;">
             <div class="card-header">
-              <div class="card-title"><span>📡</span> LIVE DEBATE TERMINAL STREAM</div>
+              <div class="card-title">LIVE DEBATE TERMINAL STREAM</div>
             </div>
             <div class="card-body" style="display: flex; flex-direction: column; gap: 10px;">
               <div id="live-stream-log" class="live-stream-log" style="flex: 1; height: 100%;">
@@ -351,9 +349,9 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
         <div class="glass-card" style="height: 100%;">
           <div class="card-header">
             <div class="card-title">
-              <span>📰</span> LIVE INSTITUTIONAL WIRE (FED, BLOOMBERG, FXSTREET, CNBC)
+              LIVE INSTITUTIONAL WIRE (FED, BLOOMBERG, FXSTREET, CNBC)
             </div>
-            <button id="btn-refresh-news" class="pill-btn">🔄 REFRESH FEEDS</button>
+            <button id="btn-refresh-news" class="pill-btn">REFRESH FEEDS</button>
           </div>
           
           <div class="card-body" style="display: flex; flex-direction: column; height: 100%; padding: 10px;">
@@ -367,7 +365,7 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
                 <button class="pill-btn" data-cat="MACRO">MACRO</button>
                 <button class="pill-btn" data-cat="COMMODITIES">COMMODITIES</button>
               </div>
-              <input id="news-search-input" type="text" class="news-search-input" placeholder="🔍 Filter headlines...">
+              <input id="news-search-input" type="text" class="news-search-input" placeholder="Filter headlines...">
             </div>
 
             <!-- Wire Table -->
@@ -381,7 +379,7 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
         <div style="display: flex; flex-direction: column; gap: 14px;">
           <div class="glass-card" style="flex: 1;">
             <div class="card-header">
-              <div class="card-title"><span>📅</span> ECONOMIC CALENDAR</div>
+              <div class="card-title">ECONOMIC CALENDAR</div>
               <span class="badge badge-bear">RED FOLDER ALERT</span>
             </div>
             <div class="card-body" style="padding: 6px;">
@@ -393,7 +391,7 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
 
           <div class="glass-card">
             <div class="card-header">
-              <div class="card-title"><span>🧠</span> AI RISK SENTINEL</div>
+              <div class="card-title">AI RISK SENTINEL</div>
             </div>
             <div class="card-body">
               <p style="font-size: 11px; color: var(--text-muted); line-height: 1.6;">
@@ -410,7 +408,7 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
     <section id="desk-ict-lab" class="desk-panel">
       <div class="glass-card" style="height: 100%;">
         <div class="card-header">
-          <div class="card-title"><span>🧪</span> ICT & QUANT STRATEGY LAB CONFIGURATION</div>
+          <div class="card-title">ICT & QUANT STRATEGY LAB CONFIGURATION</div>
         </div>
         <div class="card-body" style="max-width: 700px;">
           <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">
@@ -441,21 +439,21 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
             </select>
           </div>
 
-          <button class="btn-glow" style="margin-top: 10px;">💾 UPDATE QUANT PARAMETERS</button>
+          <button class="btn-glow" style="margin-top: 10px;">UPDATE QUANT PARAMETERS</button>
         </div>
       </div>
     </section>
 
-    <!-- DESK 4: MT5 EXECUTION BRIDGE -->
+    <!-- DESK 5: MT5 EXECUTION BRIDGE -->
     <section id="desk-mt5-bridge" class="desk-panel">
       <div class="glass-card" style="height: 100%;">
         <div class="card-header">
-          <div class="card-title"><span>⚡</span> METATRADER 5 NON-BLOCKING SOCKET IPC BRIDGE</div>
+          <div class="card-title">METATRADER 5 SOCKET IPC BRIDGE</div>
           <span id="mt5-bridge-status-text" class="badge badge-gold">LISTENING (PORT 9988)</span>
         </div>
         <div class="card-body" style="max-width: 750px;">
           <div style="background: rgba(0,0,0,0.5); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 20px;">
-            <h4 style="color: var(--cyan-neon); font-size: 14px; margin-bottom: 8px;">🔌 EA Setup Instructions</h4>
+            <h4 style="color: var(--cyan-neon); font-size: 14px; margin-bottom: 8px;">EA Setup Instructions</h4>
             <ol style="color: var(--text-muted); font-size: 12px; line-height: 1.8; padding-left: 20px;">
               <li>Copy <code>mt5-executor/Phantom_Executor.mq5</code> to your MetaTrader 5 <code>MQL5/Experts/</code> folder.</li>
               <li>Attach <strong>Phantom_Executor</strong> to any active chart in MT5 and enable <em>Algo Trading</em>.</li>
@@ -476,13 +474,13 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
       </div>
     </section>
 
-    <!-- DESK 5: RISK SHIELD & PROP FIRM MANAGER -->
+    <!-- DESK 6: RISK SHIELD & PROP FIRM MANAGER -->
     <section id="desk-risk-shield" class="desk-panel">
       <div style="display: grid; grid-template-columns: 1fr 340px; gap: 14px; height: 100%;">
         <div class="glass-card">
           <div class="card-header">
-            <div class="card-title"><span>🛡️</span> PROP FIRM DRAWDOWN GUARD (FTMO / THE5ERS)</div>
-            <span id="hard-stop-badge" class="badge badge-bull">🛡️ ACTIVE & PROTECTED</span>
+            <div class="card-title">PROP FIRM DRAWDOWN GUARD (FTMO / THE5ERS)</div>
+            <span id="hard-stop-badge" class="badge badge-bull">ACTIVE & PROTECTED</span>
           </div>
           <div class="card-body" style="max-width: 600px;">
             
@@ -507,7 +505,7 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
             </div>
 
             <button id="btn-save-risk" class="btn-glow" style="margin-top: 10px;">
-              💾 SAVE RISK PARAMETERS
+              SAVE RISK PARAMETERS
             </button>
           </div>
         </div>
@@ -515,7 +513,7 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
         <!-- Risk Metrics Summary -->
         <div class="glass-card">
           <div class="card-header">
-            <div class="card-title"><span>📊</span> LIVE METRICS</div>
+            <div class="card-title">LIVE METRICS</div>
           </div>
           <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
             <div>
@@ -539,16 +537,16 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
       </div>
     </section>
 
-    <!-- DESK 6: BYOK HUB & ENCRYPTED VAULT -->
+    <!-- DESK 7: BYOK HUB & ENCRYPTED VAULT -->
     <section id="desk-byok-vault" class="desk-panel">
       <div class="glass-card" style="height: 100%;">
         <div class="card-header">
-          <div class="card-title"><span>🔑</span> BRING-YOUR-OWN-KEY (BYOK) VAULT & PROVIDER SWITCHER</div>
-          <span class="badge badge-cyan">100% LOCAL ENCRYPTION</span>
+          <div class="card-title">BRING-YOUR-OWN-KEY (BYOK) VAULT & PROVIDER SWITCHER</div>
+          <span class="badge badge-cyan">LOCAL ENCRYPTED</span>
         </div>
         <div class="card-body" style="max-width: 650px;">
           <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height: 1.6;">
-            Your API keys are stored strictly in your local device inside <code>keys_vault.json</code>. They are never transmitted to any central servers.
+            Your API keys are stored strictly in your local device inside <code>keys_vault.json</code> with at-rest encryption. They are never transmitted to any central servers.
           </p>
 
           <div class="form-group">
@@ -572,7 +570,7 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
           </div>
 
           <button id="btn-save-keys" class="btn-glow" style="margin-top: 10px;">
-            🔒 SAVE KEYS TO LOCAL VAULT
+            SAVE KEYS TO LOCAL VAULT
           </button>
         </div>
       </div>
@@ -583,7 +581,7 @@ Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stres
   <!-- BOTTOM MASTER STATUSBAR -->
   <footer class="master-statusbar">
     <div class="status-item">
-      <span>🦅 PHANTOM CORE:</span>
+      <span>PHANTOM CORE:</span>
       <span class="text-cyan">ACTIVE</span>
     </div>
     <div class="status-item">
