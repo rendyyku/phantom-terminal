@@ -9,8 +9,9 @@
 ```
 [ MILESTONE 1 ] ➔ Bloomberg Clean Minimalist UI (Anti-AI Slop)
 [ MILESTONE 2 ] ➔ Crypto Division via Free Binance Public API (Spot & Futures)
-[ MILESTONE 3 ] ➔ Dual-Asset Institutional AI War Room (Forex, Gold & Crypto Alpha)
-[ MILESTONE 4 ] ➔ Hybrid Multi-Broker Execution (MT5 Forex + Binance API Webhook)
+[ MILESTONE 3 ] ➔ Telegram Bot Real-Time Alpha Radar (BYOB: BOS, CHoCH, OB, FVG Alerts)
+[ MILESTONE 4 ] ➔ Dual-Asset Institutional AI War Room (Forex, Gold & Crypto Alpha)
+[ MILESTONE 5 ] ➔ Hybrid Multi-Broker Execution (MT5 Forex + Binance API Webhook)
 ```
 
 ---
@@ -48,11 +49,41 @@
     - **Crypto (via Binance):** `BTCUSDT`, `ETHUSDT`, `SOLUSDT`, `BNBUSDT`, `XRPUSDT`, `DOGEUSDT`.
   - Chart secara otomatis menyesuaikan desimal presisi (misal: BTC 2 desimal, XRP 4 desimal, Gold 2 desimal).
 - [ ] **Crypto Market Intelligence Bar:**
-  - 24h Volume, Funding Rate (jika futures), Long/Short Ratio, dan Open Interest snapshot.
+  - 24h Volume, Funding Rate, Long/Short Ratio, dan Open Interest snapshot.
 
 ---
 
-## 📌 Milestone 3: AI Titan War Room V2 (Deterministic Institutional Prompting)
+## 📌 Milestone 3: Telegram Bot Real-Time Alpha Radar (BYOB: Custom Alerts)
+**Goal:** Memberikan pengguna kebebasan menghubungkan bot Telegram pribadi mereka (*Bring Your Own Bot*) untuk menerima notifikasi sinyal dan struktur pasar institusional secara *instant & sub-second*.
+
+### 🎯 Key Deliverables:
+- [ ] **Telegram Dispatcher Engine (`engine/telegram_notifier.py`):**
+  - Penyimpanan aman `Bot Token` & `Chat ID` di dalam local vault terminal.
+  - Asynchronous non-blocking message dispatcher via Telegram Bot API (`https://api.telegram.org/bot<token>/sendMessage`).
+- [ ] **Institutional Event Triggers:**
+  - ⚡ **BOS Alert:** Terpicu saat harga menembus level swing/internal dengan label harga & timeframe.
+  - 🔄 **CHoCH Alert:** Terpicu saat terjadi pembalikan tren struktural (*Change of Character*).
+  - 📦 **Order Block Tap (+OB / -OB):** Terpicu saat harga memasuki zona *Unmitigated Order Block*.
+  - 🎯 **FVG Entry & Liquidity Sweep:** Terpicu saat harga menyapu area BSL/SSL atau masuk ke Fair Value Gap.
+  - 🤖 **AI War Room Signal Consensus:** Notifikasi instan saat AI Titan Council mencapai konsensus entry dengan probabilitas > 80%.
+- [ ] **Telegram Notification Formatting (Bloomberg Style):**
+  ```text
+  🏛️ [PHANTOM RADAR] MARKET STRUCTURE BREAK
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Pair      : XAUUSD (Gold)
+  Timeframe : M1 (Scalper)
+  Event     : ⚡ BULLISH BOS DETECTED
+  Price     : 2,384.50
+  Volume    : CVD Delta +420 (Institutional Buying)
+  Action    : Monitor for pullback into +OB at 2,381.20
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ```
+- [ ] **Telegram Settings UI di Terminal:**
+  - Form input Bot Token & Chat ID dengan tombol **"🧪 Send Test Ping"** dan switch toggle untuk memilih alert yang ingin diaktifkan.
+
+---
+
+## 📌 Milestone 4: AI Titan War Room V2 (Deterministic Institutional Prompting)
 **Goal:** Membersihkan output AI agar menghasilkan analisis institusional yang *to-the-point*, matematis, dan berlandaskan probabilitas kuantitatif tanpa basa-basi naratif yang panjang.
 
 ### 🎯 Key Deliverables:
@@ -64,7 +95,7 @@
 
 ---
 
-## 📌 Milestone 4: Hybrid Execution Engine (Optional Live Automation)
+## 📌 Milestone 5: Hybrid Execution Engine (Optional Live Automation)
 **Goal:** Eksekusi fleksibel ke broker MT5 (Forex) atau akun Binance pengguna jika API key eksekusi dimasukkan.
 
 ---
@@ -73,7 +104,8 @@
 
 | Phase | Milestone | Estimasi Pengerjaan | Status |
 |---|---|---|---|
-| **Phase 1** | 🏛️ Bloomberg Clean Minimalist UI Overhaul | Sprint 1 | ⏳ **Siap Dieksekusi** |
-| **Phase 2** | 🪙 Binance Public API Crypto Engine (Free 24/7) | Sprint 2 | ⏳ **Siap Dieksekusi** |
-| **Phase 3** | 🧠 Quantitative Multi-Asset AI War Room | Sprint 3 | 📋 Terencana |
-| **Phase 4** | ⚡ Hybrid Execution & Alert Webhooks | Sprint 4 | 📋 Terencana |
+| **Milestone 1** | 🏛️ Bloomberg Clean Minimalist UI Overhaul | Sprint 1 | ⏳ **Siap Dieksekusi** |
+| **Milestone 2** | 🪙 Binance Public API Crypto Engine (Free 24/7) | Sprint 2 | ⏳ **Siap Dieksekusi** |
+| **Milestone 3** | 📱 Telegram Bot Real-Time Alpha Radar (BOS/CHoCH/OB) | Sprint 3 | ⏳ **Siap Dieksekusi** |
+| **Milestone 4** | 🧠 Quantitative Multi-Asset AI War Room | Sprint 4 | 📋 Terencana |
+| **Milestone 5** | ⚡ Hybrid Execution & Alert Webhooks | Sprint 5 | 📋 Terencana |
