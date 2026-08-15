@@ -178,6 +178,10 @@ class CandleChartEngine {
     if (fresh.length > 0) {
       fresh.sort((a, b) => a.time - b.time);
       this.candles = [...fresh, ...this.candles];
+      // Memory safety cap to prevent unbounded browser RAM growth
+      if (this.candles.length > 5000) {
+        this.candles = this.candles.slice(this.candles.length - 5000);
+      }
       this.scrollOffset += fresh.length;
     } else {
       this.hasMoreHistory = false;

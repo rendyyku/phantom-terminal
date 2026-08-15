@@ -152,9 +152,9 @@ class MT5NativeFeed:
         try:
             from datetime import datetime, timedelta, timezone
             if before_timestamp:
-                ref_time = datetime.fromtimestamp(before_timestamp)
+                ref_time = datetime.fromtimestamp(before_timestamp, tz=timezone.utc)
             else:
-                ref_time = datetime.now()
+                ref_time = datetime.now(timezone.utc)
 
             start_time = ref_time - timedelta(seconds=max(60, count * 2))
             ticks = mt5.copy_ticks_range(broker_symbol, start_time, ref_time, mt5.COPY_TICKS_ALL)

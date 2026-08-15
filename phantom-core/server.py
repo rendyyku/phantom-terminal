@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 from config import (
     SERVER_HOST, SERVER_PORT, DEFAULT_PAIRS, DEFAULT_RISK_SETTINGS, 
-    load_keys_vault, save_keys_vault, DEFAULT_AI_MODELS, BASE_DIR
+    load_keys_vault, save_keys_vault, DEFAULT_AI_MODELS, BASE_DIR, ALLOWED_ORIGINS
 )
 from engine.orderflow_math import OrderFlowMath
 from engine.prompt_builder import PromptBuilder
@@ -23,35 +23,36 @@ from bridge.mt5_connector import MT5SocketBridge
 from bridge.mt5_feed import MT5NativeFeed
 
 # Directory to Terminal UI frontend
-UI_DIR = BASE_DIR.parent / "terminal-ui"
+UI_DIST_DIR = BASE_DIR.parent / "terminal-ui"
 
 # Core Instances
-byok_client = UniversalBYOKClient()
-consensus_evaluator = ConsensusEvaluator(byok_client)
-risk_guard = RiskGuard(DEFAULT_RISK_SETTINGS)
+risk_guard = RiskGuard()
 mt5_bridge = MT5SocketBridge()
 mt5_native_feed = MT5NativeFeed()
+byok_client = UniversalBYOKClient()
+prompt_builder = PromptBuilder()
+consensus_evaluator = ConsensusEvaluator(byok_client)
 news_service = MacroNewsService()
 
-# Active Connected WebSockets
-active_websockets: List[WebSocket] = []
+# WebSocket Active Connections
+active_websockets: set[WebSocket] = set()
 
-# In-Memory Market Cache (Only populated by real MT5 data)
+# Live Market Cache & Global Context
 current_pair = "XAUUSD"
 current_timeframe = "M1"
 market_cache: Dict[str, List[Dict[str, Any]]] = {}
 
 async def broadcast_ws(message: Dict[str, Any]):
-    """Broadcasts JSON messages to all connected frontend clients."""
+    """Broadcasts JSON messages to all connected frontend clients concurrently without blocking."""
     if not active_websockets:
         return
     text = json.dumps(message)
-    for ws in list(active_websockets):
-        try:
-            await ws.send_text(text)
-        except Exception:
-            if ws in active_websockets:
-                active_websockets.remove(ws)
+    clients = list(active_websockets)
+    tasks = [ws.send_text(text) for ws in clients]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    for ws, res in zip(clients, results):
+        if isinstance(res, Exception) and ws in active_websockets:
+            active_websockets.remove(ws)
 
 def on_mt5_data_received(data: Dict[str, Any]):
     """Callback when MT5 EA sends live tick or account status."""
@@ -169,12 +170,12 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Phantom Terminal AI Quant Core", version="2.0.0", lifespan=lifespan)
 
-# Enable CORS for local web canvas frontend
+# Enable CORS restricted to trusted local terminal clients
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -367,6 +368,15 @@ async def generate_signal(payload: SignalRequestPayload):
 
 @app.post("/api/execute-order")
 async def execute_order(payload: ExecuteOrderPayload):
+    # Sync live positions if MT5 is connected
+    acc = mt5_native_feed.get_account_info()
+    if acc:
+        risk_guard.update_account_state(
+            balance=acc.get("balance", risk_guard.current_balance),
+            equity=acc.get("equity", risk_guard.current_equity),
+            active_trades=acc.get("positions_total", risk_guard.active_trades_count)
+        )
+
     # 1. Validate through Risk Shield
     is_safe, reason, lot = risk_guard.validate_trade_execution(
         pair=payload.pair,
@@ -391,9 +401,6 @@ async def execute_order(payload: ExecuteOrderPayload):
     }
 
     sent_to_mt5 = await mt5_bridge.send_order(order_packet)
-
-    # Update risk guard active count
-    risk_guard.active_trades_count += 1
 
     return {
         "status": "EXECUTED",
