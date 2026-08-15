@@ -1,0 +1,207 @@
+/* 🦅 PHANTOM TERMINAL - AI WAR ROOM & SWARM STYLES */
+
+.war-room-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 14px;
+  height: 100%;
+}
+
+.war-room-main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.titans-debate-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Titan Cards */
+.titan-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--card-border);
+  background: rgba(13, 17, 26, 0.7);
+}
+
+.titan-bull {
+  border-left: 3px solid var(--green-neon);
+}
+
+.titan-bear {
+  border-left: 3px solid var(--red-neon);
+}
+
+.titan-header {
+  padding: 10px 14px;
+  background: rgba(20, 27, 41, 0.6);
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.titan-name {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.titan-thesis-content {
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-main);
+  overflow-y: auto;
+  flex: 1;
+  white-space: pre-wrap;
+}
+
+/* Supreme Judge Verdict Panel */
+.judge-card {
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  background: linear-gradient(180deg, rgba(15, 22, 36, 0.9), rgba(10, 14, 23, 0.95));
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.1);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.judge-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.consensus-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.consensus-score-circle {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 3px solid var(--cyan-neon);
+  box-shadow: 0 0 15px var(--cyan-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--cyan-neon);
+}
+
+.decision-banner {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.decision-buy {
+  background: rgba(0, 255, 136, 0.2);
+  color: var(--green-neon);
+  border: 1px solid var(--green-neon);
+  box-shadow: 0 0 20px var(--green-glow);
+}
+
+.decision-sell {
+  background: rgba(255, 51, 102, 0.2);
+  color: var(--red-neon);
+  border: 1px solid var(--red-neon);
+  box-shadow: 0 0 20px var(--red-glow);
+}
+
+.decision-wait {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--gold-neon);
+  border: 1px solid var(--gold-neon);
+}
+
+.trade-levels-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  background: rgba(7, 9, 14, 0.6);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--card-border);
+}
+
+.level-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.level-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+}
+
+.level-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Sidebar Stats & Trigger */
+.war-room-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.trigger-box {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.live-stream-log {
+  background: #05070a;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--cyan-neon);
+  height: 180px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.log-entry {
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+.log-entry.judge { color: var(--gold-neon); }
+.log-entry.bull { color: var(--green-neon); }
+.log-entry.bear { color: var(--red-neon); }

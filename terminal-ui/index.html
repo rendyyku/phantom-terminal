@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦅 PHANTOM TERMINAL | Next-Gen AI Quant & OrderFlow Platform</title>
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/terminal.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/war_room.css">
+  <link rel="stylesheet" href="css/news.css">
+</head>
+<body>
+
+  <!-- MASTER TOP NAVIGATION HEADER -->
+  <header class="master-header">
+    <div class="brand-container">
+      <div class="brand-logo">🦅</div>
+      <div class="brand-title">PHANTOM TERMINAL</div>
+      <div class="brand-badge">v2.0 PRO QUANT</div>
+    </div>
+
+    <!-- CORE DESKS SELECTOR -->
+    <nav class="desk-nav">
+      <button class="desk-btn active" data-desk="desk-market">
+        <span>📊</span> 1. Market & OrderFlow
+      </button>
+      <button class="desk-btn" data-desk="desk-war-room">
+        <span>⚔️</span> 2. AI War Room
+      </button>
+      <button class="desk-btn" data-desk="desk-macro-news">
+        <span>📰</span> 3. Macro News Wire
+      </button>
+      <button class="desk-btn" data-desk="desk-ict-lab">
+        <span>🧪</span> 4. ICT Quant Lab
+      </button>
+      <button class="desk-btn" data-desk="desk-mt5-bridge">
+        <span>⚡</span> 5. MT5 Bridge
+      </button>
+      <button class="desk-btn" data-desk="desk-risk-shield">
+        <span>🛡️</span> 6. Prop Risk Shield
+      </button>
+      <button class="desk-btn" data-desk="desk-byok-vault">
+        <span>🔑</span> 7. BYOK Vault
+      </button>
+    </nav>
+
+    <!-- HEADER RIGHT CONTROLS -->
+    <div class="header-actions">
+      <select id="pair-select" class="pair-selector">
+        <option value="XAUUSD">🟡 XAUUSD (Gold)</option>
+        <option value="EURUSD">🔵 EURUSD</option>
+        <option value="GBPUSD">🟣 GBPUSD</option>
+        <option value="USDJPY">🔴 USDJPY</option>
+        <option value="BTCUSD">🟠 BTCUSD</option>
+      </select>
+
+      <button id="btn-trigger-war-room" class="btn-glow">
+        <span>⚡</span> SUMMON AI WAR ROOM
+      </button>
+
+      <div class="system-status">
+        <div id="status-indicator-dot" class="status-dot"></div>
+        <span id="status-indicator-text">CONNECTING...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- BLOOMBERG-STYLE LIVE FLASH NEWS TICKER STRIP -->
+  <div class="flash-ticker-bar">
+    <div class="flash-badge">⚡ FLASH WIRE</div>
+    <div id="flash-ticker-headline" class="flash-ticker-text">
+      <strong style="color: var(--cyan-neon);">[FEDERAL RESERVE]</strong> Fed Chair Powell signals data-dependent stance on rates as core inflation moderates...
+    </div>
+    <div style="margin-left: 10px; font-size: 10px; color: var(--gold-neon);">LIVE FEEDS: CONNECTED</div>
+  </div>
+
+  <!-- MAIN TERMINAL WORKSPACE -->
+  <main class="workspace-container">
+
+    <!-- DESK 1: MARKET & ORDERFLOW RADAR -->
+    <section id="desk-market" class="desk-panel active">
+      <div style="display: grid; grid-template-columns: 1fr 320px; gap: 14px; height: 100%;">
+        
+        <!-- Main Chart Container -->
+        <div class="glass-card" style="height: 100%; display: flex; flex-direction: column;">
+          <div class="card-header" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 14px; min-height: 42px;">
+            <div class="card-title" style="font-size: 12px; white-space: nowrap;">
+              <span>📈</span> MARKET CHART & ORDERFLOW
+            </div>
+
+            <!-- Timeframe Selector -->
+            <div class="timeframe-selector" style="display: flex; gap: 3px;">
+              <button class="pill-btn tf-btn active" data-tf="1S">1S</button>
+              <button class="pill-btn tf-btn" data-tf="M1">M1</button>
+              <button class="pill-btn tf-btn" data-tf="M5">M5</button>
+              <button class="pill-btn tf-btn" data-tf="M15">M15</button>
+              <button class="pill-btn tf-btn" data-tf="H1">H1</button>
+              <button class="pill-btn tf-btn" data-tf="H4">H4</button>
+              <button class="pill-btn tf-btn" data-tf="D1">D1</button>
+            </div>
+
+            <!-- Optional Indicators (Default OFF / Clean) -->
+            <div style="display: flex; gap: 4px; align-items: center;">
+              <span style="font-size: 10px; color: var(--text-muted); margin-right: 2px;">OVERLAYS:</span>
+              <button id="toggle-smc" class="pill-btn" style="font-size: 10px; padding: 2px 8px;">✨ SMC</button>
+              <button id="toggle-vp" class="pill-btn" style="font-size: 10px; padding: 2px 8px;">📊 VP (POC)</button>
+              <button id="toggle-zones" class="pill-btn" style="font-size: 10px; padding: 2px 8px;">🎯 Zones</button>
+            </div>
+
+            <!-- Status Badges -->
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <span id="market-data-source-badge" class="badge badge-bear">🔴 MT5 OFFLINE</span>
+              <span id="timeframe-indicator-badge" class="badge badge-cyan">1S ⚡ HFT</span>
+            </div>
+          </div>
+          
+          <div style="flex: 1; position: relative; min-height: 0; display: flex; flex-direction: column;">
+            <!-- Main Candlestick Canvas -->
+            <div style="flex: 1; position: relative;">
+              <canvas id="candle-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+            </div>
+            
+            <!-- Sub-Chart: CVD -->
+            <div style="height: 100px; border-top: 1px solid var(--card-border); position: relative; background: rgba(7, 9, 14, 0.4);">
+              <canvas id="cvd-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Radar Sidebar -->
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="glass-card">
+            <div class="card-header">
+              <div class="card-title"><span>🎯</span> INSTITUTIONAL QUANT RADAR</div>
+            </div>
+            <div class="card-body">
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: var(--text-muted);">Structure Trend:</span>
+                  <span id="ict-trend-status" class="badge badge-bull" style="font-size: 10px;">BULLISH</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: var(--text-muted);">Point of Control (POC):</span>
+                  <span id="vp-poc-val" class="text-red font-mono" style="font-weight: 700;">--</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: var(--text-muted);">Value Area (VAH / VAL):</span>
+                  <span id="vp-va-val" class="text-cyan font-mono" style="font-weight: 700;">-- / --</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: var(--text-muted);">Active Order Blocks:</span>
+                  <span id="smc-ob-count" class="text-green font-mono" style="font-weight: 700;">--</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: var(--text-muted);">Unmitigated FVGs:</span>
+                  <span id="ict-fvg-count" class="text-cyan font-mono" style="font-weight: 700;">--</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: var(--text-muted);">Equal Highs (EQH/BSL):</span>
+                  <span id="ict-bsl-count" class="text-gold font-mono" style="font-weight: 700;">--</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                  <span style="color: var(--text-muted);">Equal Lows (EQL/SSL):</span>
+                  <span id="ict-ssl-count" class="text-gold font-mono" style="font-weight: 700;">--</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card" style="flex: 1;">
+            <div class="card-header">
+              <div class="card-title"><span>⚡</span> QUICK ACTION</div>
+            </div>
+            <div class="card-body" style="display: flex; flex-direction: column; gap: 12px; justify-content: center;">
+              <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+                AI Titan Council is ready. Launch the multi-agent debate to calculate instant institutional entry levels and R:R probability.
+              </p>
+              <button onclick="phantomApp.triggerWarRoomDebate()" class="btn-glow" style="width: 100%;">
+                🔥 LAUNCH AI WAR ROOM DEBATE
+              </button>
+            </div>
+          </div>
+        </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DESK 2: AI WAR ROOM & SWARM DESK -->
+    <section id="desk-war-room" class="desk-panel">
+      <div class="war-room-grid">
+        
+        <div class="war-room-main">
+          <!-- Titans Debate Columns -->
+          <div class="titans-debate-row">
+            
+            <!-- Titan 1: Bullish Specialist -->
+            <div class="glass-card titan-card titan-bull">
+              <div class="titan-header">
+                <div class="titan-name text-green">
+                  <span>🟢</span> TITAN 1: CLAUDE 3.5 (BULL SPECIALIST)
+                </div>
+                <span class="badge badge-bull">ICT DISPLACEMENT</span>
+              </div>
+              <div id="bull-thesis-content" class="titan-thesis-content">
+[Awaiting War Room Summon...]
+Click "SUMMON AI WAR ROOM" to dispatch Claude 3.5 for deep spatial Bullish analysis.
+              </div>
+            </div>
+
+            <!-- Titan 2: Bearish Specialist -->
+            <div class="glass-card titan-card titan-bear">
+              <div class="titan-header">
+                <div class="titan-name text-red">
+                  <span>🔴</span> TITAN 2: DEEPSEEK R1 (BEAR SPECIALIST)
+                </div>
+                <span class="badge badge-bear">TRAP & RESISTANCE</span>
+              </div>
+              <div id="bear-thesis-content" class="titan-thesis-content">
+[Awaiting War Room Summon...]
+Click "SUMMON AI WAR ROOM" to dispatch DeepSeek R1 for adversarial Bearish stress testing.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Supreme Judge Panel -->
+          <div class="judge-card">
+            <div class="judge-top-row">
+              <div class="consensus-container">
+                <div id="consensus-score-val" class="consensus-score-circle">--%</div>
+                <div>
+                  <div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">AI CONSENSUS SCORE</div>
+                  <div style="font-size: 14px; font-weight: 700; color: var(--cyan-neon);">SUPREME JUDGE ARBITRATION</div>
+                </div>
+              </div>
+
+              <div id="judge-decision-banner" class="decision-banner decision-wait">
+                STANDBY / READY
+              </div>
+            </div>
+
+            <div class="trade-levels-grid">
+              <div class="level-box">
+                <span class="level-label">ENTRY PRICE</span>
+                <span id="level-entry" class="level-value text-cyan">--</span>
+              </div>
+              <div class="level-box">
+                <span class="level-label">STOP LOSS (SL)</span>
+                <span id="level-sl" class="level-value text-red">--</span>
+              </div>
+              <div class="level-box">
+                <span class="level-label">TAKE PROFIT (TP)</span>
+                <span id="level-tp" class="level-value text-green">--</span>
+              </div>
+              <div class="level-box">
+                <span class="level-label">RISK : REWARD</span>
+                <span id="level-rr" class="level-value text-gold">--</span>
+              </div>
+            </div>
+
+            <div style="font-size: 12px; color: var(--text-muted); font-family: var(--font-mono);" id="judge-reasoning-text">
+              Run debate to receive Chief Quant Arbiter synthesis and verified setup.
+            </div>
+
+            <div>
+              <button id="btn-execute-1click" class="btn-glow" style="display: none; width: 100%;">
+                ⚡ 1-CLICK MT5 EXECUTION
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- War Room Sidebar -->
+        <div class="war-room-sidebar">
+          <div class="glass-card" style="height: 100%;">
+            <div class="card-header">
+              <div class="card-title"><span>📡</span> LIVE DEBATE TERMINAL STREAM</div>
+            </div>
+            <div class="card-body" style="display: flex; flex-direction: column; gap: 10px;">
+              <div id="live-stream-log" class="live-stream-log" style="flex: 1; height: 100%;">
+                <div class="log-entry judge">[SYSTEM] Phantom AI War Room Swarm Engine v2.0 ready.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DESK 3: MACROECONOMIC NEWS & WIRE RADAR -->
+    <section id="desk-macro-news" class="desk-panel">
+      <div class="news-grid">
+        
+        <!-- News Wire Main List -->
+        <div class="glass-card" style="height: 100%;">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📰</span> LIVE INSTITUTIONAL WIRE (FED, BLOOMBERG, FXSTREET, CNBC)
+            </div>
+            <button id="btn-refresh-news" class="pill-btn">🔄 REFRESH FEEDS</button>
+          </div>
+          
+          <div class="card-body" style="display: flex; flex-direction: column; height: 100%; padding: 10px;">
+            <!-- Category Command Bar Filter -->
+            <div class="news-command-bar">
+              <div class="news-filter-pills">
+                <button class="pill-btn active" data-cat="ALL">ALL</button>
+                <button class="pill-btn" data-cat="FOREX">FOREX</button>
+                <button class="pill-btn" data-cat="GOLD">GOLD</button>
+                <button class="pill-btn" data-cat="FED">FED / RATES</button>
+                <button class="pill-btn" data-cat="MACRO">MACRO</button>
+                <button class="pill-btn" data-cat="COMMODITIES">COMMODITIES</button>
+              </div>
+              <input id="news-search-input" type="text" class="news-search-input" placeholder="🔍 Filter headlines...">
+            </div>
+
+            <!-- Wire Table -->
+            <div id="news-wire-list" class="wire-table-container">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Sidebar: Economic Calendar -->
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="glass-card" style="flex: 1;">
+            <div class="card-header">
+              <div class="card-title"><span>📅</span> ECONOMIC CALENDAR</div>
+              <span class="badge badge-bear">RED FOLDER ALERT</span>
+            </div>
+            <div class="card-body" style="padding: 6px;">
+              <div id="economic-calendar-list" style="display: flex; flex-direction: column; gap: 4px;">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-header">
+              <div class="card-title"><span>🧠</span> AI RISK SENTINEL</div>
+            </div>
+            <div class="card-body">
+              <p style="font-size: 11px; color: var(--text-muted); line-height: 1.6;">
+                AI Titans continuously monitor breaking news headlines and pause executions 15 minutes before Red Folder events.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DESK 4: ICT & QUANT STRATEGY LAB -->
+    <section id="desk-ict-lab" class="desk-panel">
+      <div class="glass-card" style="height: 100%;">
+        <div class="card-header">
+          <div class="card-title"><span>🧪</span> ICT & QUANT STRATEGY LAB CONFIGURATION</div>
+        </div>
+        <div class="card-body" style="max-width: 700px;">
+          <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">
+            The In-House Quant Engine runs mathematical filters locally at zero token cost. AI Swarm is only triggered when mathematical confluences align.
+          </p>
+
+          <div class="form-group">
+            <label class="form-label">Fair Value Gap (FVG) Minimum Gap Multiplier</label>
+            <input type="number" class="form-input" value="1.5" step="0.1">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Liquidity Pool Tolerance (Pips)</label>
+            <input type="number" class="form-input" value="2.0" step="0.5">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Cumulative Volume Delta (CVD) Divergence Sensitivity</label>
+            <input type="number" class="form-input" value="80" step="5">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Event-Driven Wakeup Condition</label>
+            <select class="form-input">
+              <option>M15 Liquidity Sweep + Unmitigated FVG Retest</option>
+              <option>CVD Imbalance Spike (>500 delta) + CHoCH</option>
+              <option>Strict 3-Confluence Institutional Setup</option>
+            </select>
+          </div>
+
+          <button class="btn-glow" style="margin-top: 10px;">💾 UPDATE QUANT PARAMETERS</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESK 4: MT5 EXECUTION BRIDGE -->
+    <section id="desk-mt5-bridge" class="desk-panel">
+      <div class="glass-card" style="height: 100%;">
+        <div class="card-header">
+          <div class="card-title"><span>⚡</span> METATRADER 5 NON-BLOCKING SOCKET IPC BRIDGE</div>
+          <span id="mt5-bridge-status-text" class="badge badge-gold">LISTENING (PORT 9988)</span>
+        </div>
+        <div class="card-body" style="max-width: 750px;">
+          <div style="background: rgba(0,0,0,0.5); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 20px;">
+            <h4 style="color: var(--cyan-neon); font-size: 14px; margin-bottom: 8px;">🔌 EA Setup Instructions</h4>
+            <ol style="color: var(--text-muted); font-size: 12px; line-height: 1.8; padding-left: 20px;">
+              <li>Copy <code>mt5-executor/Phantom_Executor.mq5</code> to your MetaTrader 5 <code>MQL5/Experts/</code> folder.</li>
+              <li>Attach <strong>Phantom_Executor</strong> to any active chart in MT5 and enable <em>Algo Trading</em>.</li>
+              <li>The EA will instantly handshake with Phantom Terminal on <code>127.0.0.1:9988</code>.</li>
+            </ol>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Active Magic Number</label>
+            <input type="text" class="form-input" value="777999" readonly>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Execution Latency Target</label>
+            <input type="text" class="form-input text-green" value="< 5.0 Milliseconds" readonly>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESK 5: RISK SHIELD & PROP FIRM MANAGER -->
+    <section id="desk-risk-shield" class="desk-panel">
+      <div style="display: grid; grid-template-columns: 1fr 340px; gap: 14px; height: 100%;">
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-title"><span>🛡️</span> PROP FIRM DRAWDOWN GUARD (FTMO / THE5ERS)</div>
+            <span id="hard-stop-badge" class="badge badge-bull">🛡️ ACTIVE & PROTECTED</span>
+          </div>
+          <div class="card-body" style="max-width: 600px;">
+            
+            <div class="form-group">
+              <label class="form-label">Account Balance ($)</label>
+              <input id="risk-balance-input" type="number" class="form-input" value="10000">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Risk Tolerance Per Trade (%)</label>
+              <input id="risk-per-trade-input" type="number" class="form-input" value="1.0" step="0.25">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Daily Hard Stop Drawdown Limit (%)</label>
+              <input id="risk-daily-dd-input" type="number" class="form-input" value="3.0" step="0.5">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Maximum Concurrent Open Trades</label>
+              <input id="risk-max-trades-input" type="number" class="form-input" value="3">
+            </div>
+
+            <button id="btn-save-risk" class="btn-glow" style="margin-top: 10px;">
+              💾 SAVE RISK PARAMETERS
+            </button>
+          </div>
+        </div>
+
+        <!-- Risk Metrics Summary -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-title"><span>📊</span> LIVE METRICS</div>
+          </div>
+          <div class="card-body" style="display: flex; flex-direction: column; gap: 16px;">
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted);">BALANCE</div>
+              <div id="stat-account-balance" class="font-mono text-cyan" style="font-size: 20px; font-weight: 700;">$10,000.00</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted);">EQUITY</div>
+              <div id="stat-account-equity" class="font-mono text-main" style="font-size: 20px; font-weight: 700;">$10,000.00</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted);">DAILY P&L</div>
+              <div id="stat-daily-pnl" class="font-mono text-green" style="font-size: 20px; font-weight: 700;">+$0.00</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; color: var(--text-muted);">CURRENT DRAWDOWN</div>
+              <div id="stat-drawdown-percent" class="font-mono text-gold" style="font-size: 16px; font-weight: 700;">0.00% / 3.0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESK 6: BYOK HUB & ENCRYPTED VAULT -->
+    <section id="desk-byok-vault" class="desk-panel">
+      <div class="glass-card" style="height: 100%;">
+        <div class="card-header">
+          <div class="card-title"><span>🔑</span> BRING-YOUR-OWN-KEY (BYOK) VAULT & PROVIDER SWITCHER</div>
+          <span class="badge badge-cyan">100% LOCAL ENCRYPTION</span>
+        </div>
+        <div class="card-body" style="max-width: 650px;">
+          <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px; line-height: 1.6;">
+            Your API keys are stored strictly in your local device inside <code>keys_vault.json</code>. They are never transmitted to any central servers.
+          </p>
+
+          <div class="form-group">
+            <label class="form-label">OpenRouter API Key (Recommended for All Models)</label>
+            <input id="key-openrouter" type="password" class="form-input" placeholder="sk-or-v1-...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">OpenAI API Key (Direct GPT-4o)</label>
+            <input id="key-openai" type="password" class="form-input" placeholder="sk-proj-...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">DeepSeek API Key (Direct DeepSeek-R1)</label>
+            <input id="key-deepseek" type="password" class="form-input" placeholder="sk-...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Anthropic API Key (Direct Claude 3.5)</label>
+            <input id="key-anthropic" type="password" class="form-input" placeholder="sk-ant-...">
+          </div>
+
+          <button id="btn-save-keys" class="btn-glow" style="margin-top: 10px;">
+            🔒 SAVE KEYS TO LOCAL VAULT
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM MASTER STATUSBAR -->
+  <footer class="master-statusbar">
+    <div class="status-item">
+      <span>🦅 PHANTOM CORE:</span>
+      <span class="text-cyan">ACTIVE</span>
+    </div>
+    <div class="status-item">
+      <span>PROP SHIELD:</span>
+      <span class="text-green">COMPLIANT (FTMO / The5ers)</span>
+    </div>
+    <div class="status-item">
+      <span>ENGINE:</span>
+      <span class="text-gold">FASTAPI + CANVAS 60FPS</span>
+    </div>
+  </footer>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container"></div>
+
+  <!-- JAVASCRIPT SCRIPTS -->
+  <script src="js/charts/candle_engine.js"></script>
+  <script src="js/charts/cvd_heatmap.js"></script>
+  <script src="js/desks/war_room_view.js"></script>
+  <script src="js/desks/news_view.js"></script>
+  <script src="js/desks/risk_view.js"></script>
+  <script src="js/core/socket_client.js"></script>
+  <script src="js/core/app.js"></script>
+</body>
+</html>

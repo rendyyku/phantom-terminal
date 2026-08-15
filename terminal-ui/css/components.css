@@ -1,0 +1,267 @@
+/* 🦅 PHANTOM TERMINAL - REUSABLE UI COMPONENTS */
+
+/* Glass Cards */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--card-border-glow);
+}
+
+.card-header {
+  padding: 10px 14px;
+  background: rgba(13, 17, 26, 0.6);
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-body {
+  padding: 14px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Glowing Buttons */
+.btn-glow {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 240, 255, 0.05));
+  border: 1px solid var(--cyan-neon);
+  color: var(--cyan-neon);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-glow:hover {
+  background: var(--cyan-neon);
+  color: #07090e;
+  box-shadow: 0 0 16px var(--cyan-glow);
+  transform: translateY(-1px);
+}
+
+.btn-glow:active {
+  transform: translateY(0);
+}
+
+.btn-buy {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.05));
+  border-color: var(--green-neon);
+  color: var(--green-neon);
+}
+.btn-buy:hover {
+  background: var(--green-neon);
+  color: #07090e;
+  box-shadow: 0 0 20px var(--green-glow);
+}
+
+.btn-sell {
+  background: linear-gradient(135deg, rgba(255, 51, 102, 0.2), rgba(255, 51, 102, 0.05));
+  border-color: var(--red-neon);
+  color: var(--red-neon);
+}
+.btn-sell:hover {
+  background: var(--red-neon);
+  color: #07090e;
+  box-shadow: 0 0 20px var(--red-glow);
+}
+
+/* Badges */
+.badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-bull {
+  background: rgba(0, 255, 136, 0.15);
+  color: var(--green-neon);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.badge-bear {
+  background: rgba(255, 51, 102, 0.15);
+  color: var(--red-neon);
+  border: 1px solid rgba(255, 51, 102, 0.3);
+}
+
+.badge-cyan {
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--cyan-neon);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.badge-gold {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--gold-neon);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Pill Buttons (Timeframes & Indicator Toggles) */
+.pill-btn {
+  background: rgba(18, 24, 38, 0.7);
+  border: 1px solid rgba(38, 56, 89, 0.6);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.pill-btn:hover {
+  background: rgba(38, 56, 89, 0.8);
+  color: var(--text-main);
+  border-color: var(--cyan-neon);
+}
+
+.pill-btn.active {
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--cyan-neon);
+  border-color: var(--cyan-neon);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+}
+
+/* Form Controls & Inputs */
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input {
+  width: 100%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus {
+  border-color: var(--cyan-neon);
+  box-shadow: 0 0 10px var(--cyan-glow);
+}
+
+/* Toast Notifications */
+#toast-container {
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  background: rgba(15, 22, 36, 0.95);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--card-border);
+  border-left: 4px solid var(--cyan-neon);
+  color: var(--text-main);
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 280px;
+}
+
+.toast.success { border-left-color: var(--green-neon); }
+.toast.error { border-left-color: var(--red-neon); }
+.toast.warning { border-left-color: var(--gold-neon); }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Modal Window */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-container {
+  width: 90%;
+  max-width: 550px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--cyan-neon);
+  box-shadow: 0 0 40px rgba(0, 240, 255, 0.25);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  animation: zoomIn 0.2s ease-out;
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

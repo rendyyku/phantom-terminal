@@ -1,0 +1,218 @@
+/* 🦅 PHANTOM TERMINAL - BLOOMBERG-STYLE NEWS WIRE & FLASH TICKER */
+
+/* Top Flash Ticker Strip */
+.flash-ticker-bar {
+  height: 26px;
+  background: rgba(18, 14, 5, 0.95);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.35);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 0 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  z-index: 99;
+}
+
+.flash-badge {
+  background: rgba(245, 158, 11, 0.25);
+  color: var(--gold-neon);
+  border: 1px solid var(--gold-neon);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 700;
+  margin-right: 12px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  animation: pulse-flash 1.5s infinite;
+}
+
+@keyframes pulse-flash {
+  0% { box-shadow: 0 0 4px rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 12px rgba(245, 158, 11, 0.8); }
+  100% { box-shadow: 0 0 4px rgba(245, 158, 11, 0.4); }
+}
+
+.flash-ticker-text {
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.flash-ticker-text a {
+  color: #f1f5f9;
+  text-decoration: none;
+}
+.flash-ticker-text a:hover {
+  color: var(--cyan-neon);
+  text-decoration: underline;
+}
+
+/* Desk 7: News Wire Layout */
+.news-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 14px;
+  height: 100%;
+}
+
+.news-command-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.news-filter-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pill-btn {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pill-btn:hover {
+  color: var(--text-main);
+  border-color: var(--cyan-neon);
+}
+
+.pill-btn.active {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--gold-neon);
+  border-color: var(--gold-neon);
+}
+
+.news-search-input {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  outline: none;
+  width: 180px;
+}
+
+.news-search-input:focus {
+  border-color: var(--cyan-neon);
+}
+
+/* Dense News Wire Table */
+.wire-table-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.wire-item {
+  display: grid;
+  grid-template-columns: 60px 100px 1fr 30px 140px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(38, 56, 89, 0.3);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+.wire-item:hover {
+  background: rgba(0, 240, 255, 0.05);
+}
+
+.wire-time {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.wire-source {
+  font-weight: 700;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wire-source.FED { background: rgba(168, 85, 247, 0.2); color: var(--purple-neon); border: 1px solid rgba(168, 85, 247, 0.4); }
+.wire-source.FXSTREET { background: rgba(0, 240, 255, 0.2); color: var(--cyan-neon); border: 1px solid rgba(0, 240, 255, 0.4); }
+.wire-source.BLOOMBERG { background: rgba(245, 158, 11, 0.2); color: var(--gold-neon); border: 1px solid rgba(245, 158, 11, 0.4); }
+.wire-source.CNBC { background: rgba(0, 255, 136, 0.2); color: var(--green-neon); border: 1px solid rgba(0, 255, 136, 0.4); }
+
+.wire-headline {
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.wire-sentiment {
+  text-align: center;
+  font-weight: 700;
+}
+.wire-sentiment.BULLISH { color: var(--green-neon); }
+.wire-sentiment.BEARISH { color: var(--red-neon); }
+.wire-sentiment.NEUTRAL { color: var(--text-muted); }
+
+.wire-tickers {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.ticker-tag {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(0, 240, 255, 0.1);
+  color: var(--cyan-neon);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+/* Economic Calendar Panel */
+.calendar-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--card-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.impact-high {
+  background: rgba(255, 51, 102, 0.2);
+  color: var(--red-neon);
+  border: 1px solid rgba(255, 51, 102, 0.5);
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
+}

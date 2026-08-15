@@ -1,0 +1,256 @@
+/* 🦅 PHANTOM TERMINAL - CYBERPUNK GLASSMORPHISM DESIGN SYSTEM */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Color Palette - Neon Cyberpunk Dark */
+  --bg-primary: #07090e;
+  --bg-secondary: #0d111a;
+  --bg-tertiary: #131926;
+  --card-bg: rgba(15, 22, 36, 0.75);
+  --card-border: rgba(38, 56, 89, 0.45);
+  --card-border-glow: rgba(0, 240, 255, 0.2);
+
+  /* Accents */
+  --cyan-neon: #00f0ff;
+  --cyan-glow: rgba(0, 240, 255, 0.35);
+  --green-neon: #00ff88;
+  --green-glow: rgba(0, 255, 136, 0.35);
+  --red-neon: #ff3366;
+  --red-glow: rgba(255, 51, 102, 0.35);
+  --purple-neon: #a855f7;
+  --purple-glow: rgba(168, 85, 247, 0.35);
+  --gold-neon: #f59e0b;
+  --gold-glow: rgba(245, 158, 11, 0.35);
+
+  /* Typography */
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #475569;
+  --font-ui: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Glassmorphism */
+  --glass-blur: blur(16px);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-ui);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.05) 0%, transparent 40%);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan-neon);
+}
+
+/* Top Master Header */
+.master-header {
+  height: 56px;
+  background: rgba(10, 14, 23, 0.85);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  font-size: 22px;
+  color: var(--cyan-neon);
+  filter: drop-shadow(0 0 8px var(--cyan-glow));
+}
+
+.brand-title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #fff 30%, var(--cyan-neon) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-badge {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--cyan-neon);
+  padding: 2px 8px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+/* Desk Navigation Tabs */
+.desk-nav {
+  display: flex;
+  gap: 6px;
+  background: rgba(13, 17, 26, 0.9);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+}
+
+.desk-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.desk-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.desk-btn.active {
+  color: #07090e;
+  background: var(--cyan-neon);
+  box-shadow: 0 0 14px var(--cyan-glow);
+  font-weight: 700;
+}
+
+/* Quick Info & Header Actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pair-selector {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--card-border);
+  color: var(--gold-neon);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  cursor: pointer;
+}
+
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green-neon);
+  box-shadow: 0 0 8px var(--green-glow);
+  animation: pulse 2s infinite;
+}
+
+.status-dot.disconnected {
+  background: var(--red-neon);
+  box-shadow: 0 0 8px var(--red-glow);
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Main Terminal Workspace */
+.workspace-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding: 14px;
+}
+
+.desk-panel {
+  display: none;
+  height: 100%;
+  width: 100%;
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.desk-panel.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Bottom Status Bar */
+.master-statusbar {
+  height: 28px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  z-index: 100;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.text-cyan { color: var(--cyan-neon); }
+.text-green { color: var(--green-neon); }
+.text-red { color: var(--red-neon); }
+.text-gold { color: var(--gold-neon); }
+.text-purple { color: var(--purple-neon); }
